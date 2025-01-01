@@ -1,0 +1,10 @@
+/vendor/
+composer.lock
+**/build/**/*
+!**/build/.gitkeep
+**/viewi-default/**/*
+**/node_modules
+test/js/app/**/*
+test/js/exports/**/*
+test/js/dist/**/*
+test/js/viewi/**/*
