@@ -27,6 +27,11 @@ class ViewiUI extends ViewiPackage
         return 'viewi-ui';
     }
 
+    public static function assetsPath(): ?string
+    {
+        return __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'assets';
+    }
+
     public static function getDependencies(): array
     {
         return [ViewiIcons::class];
