@@ -1,0 +1,15 @@
+<div class="pt-2">
+    <Portal name="$portalName"></Portal>
+    <div class="tab-content">
+        <slot></slot>
+    </div>
+    <Portal to="$portalName">
+        <ul role="tablist" class="nav nav-tabs $classList" id="$id">
+            <li foreach="$context->tabs as $tabItem" role="presentation" class="nav-item">
+                <a role="tab" aria-selected="{$tabItem->active}" aria-setsize="2" aria-posinset="1" href="#"
+                    target="_self" class="nav-link" class.active="{$tabItem->active}" id="$id" aria-controls="$id"
+                    (click)="selectTab($event, $tabItem)">{$tabItem->title}</a>
+            </li>
+        </ul>
+    </Portal>
+</div>
