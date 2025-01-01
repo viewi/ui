@@ -1,0 +1,26 @@
+{
+    "name": "viewi/ui",
+    "description": "Viewi UI library",
+    "type": "library",
+    "require": {
+        "viewi/viewi": "^2.5",
+        "viewi/icons": "^1.1"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Viewi\\UI\\": "src/ViewiUI/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Components\\": "test/Components/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ivan Voitovych",
+            "email": "col606v@gmail.com"
+        }
+    ]
+}
