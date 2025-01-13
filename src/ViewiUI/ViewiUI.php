@@ -7,9 +7,9 @@ use Viewi\Packages\ViewiPackage;
 
 class ViewiUI extends ViewiPackage
 {
-    public static function getComponentsPath(): ?string
+    public static function getComponentsPath(): array
     {
-        return __DIR__ . DIRECTORY_SEPARATOR . 'Components';
+        return [__DIR__ . DIRECTORY_SEPARATOR . 'Components'];
     }
 
     public static function jsDir(): ?string
