@@ -1,0 +1,8 @@
+<Portal to="body">
+    <div #area class="{$backdrop ? 'modal fade show' : ''}" class.position-absolute="$absolute" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true" style="$style">
+        <div if="$backdrop" class="modal-backdrop fade" class.show="{!$transparent}" style="z-index: 0;"
+            (click)="onOutside"></div>
+        <slot></slot>
+    </div>
+</Portal>
