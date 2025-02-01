@@ -1,0 +1,18 @@
+<nav aria-label="Pagination">
+    <ul class="pagination justify-content-end">
+        <li class="page-item" class.disabled="{$paging->page === 1}">
+            <a class="page-link" href="#" (click)="setPage($event, $paging->page - 1)">
+                <Icon name="bi-chevron-left" classList="icon icon-sm" />
+            </a>
+        </li>
+        <li foreach="$paging->pages as $page" class="page-item" class.active="{$page === $paging->page}"
+            aria-current="{$page === $paging->page ? 'page' : null}">
+            <a class="page-link" href="#" (click)="setPage($event, $page)">$page</a>
+        </li>
+        <li class="page-item" class.disabled="{$paging->page === $paging->totalPages || $paging->totalPages === 0}">
+            <a class="page-link" href="#" (click)="setPage($event, $paging->page + 1)">
+                <Icon name="bi-chevron-right" classList="icon icon-sm" />
+            </a>
+        </li>
+    </ul>
+</nav>
