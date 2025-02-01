@@ -1,0 +1,64 @@
+<div class="data-table">
+    <div if="{$search || $add || $addLink}" class="row">
+        <div if="$search" class="col col-md-6 col-lg-5 col-12 pb-4">
+            <input type="text" class="form-control" placeholder="Search" aria-label="Search" (input)="onSearch">
+        </div>
+        <div if="{$add || $addLink}" class="col col-md-6 col-lg-7 col-12 text-end">
+            <a href="$addLink" type="button" class="btn btn-primary">
+                <div class="d-flex align-items-center">
+                    <Icon name="bi-plus-square" classList="bi me-2" width="1.5em" height="1.5em" />
+                    $addText
+                </div>
+            </a>
+        </div>
+    </div>
+
+
+    <table class="table align-middle mt-4">
+        <thead>
+            <tr>
+                <th foreach="$columns as $column" scope="col"
+                    class="{$column->type === 'boolean' ? 'text-center' : ''}">{$column->title ?? $column->key}</th>
+                <th if="{$remove || $edit}" scope="col" class="text-center">
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr foreach="$items as $item">
+                <template foreach="$columns as $column">
+                    <template if="{isset($_slots['column_' . $column->key])}">
+                        <slot name="{'column_' . $column->key}" data="$item"></slot>
+                    </template>
+                    <td else class="{$column->type === 'boolean' ? 'text-center text-success' : ''}">
+                        <template if="$column->type === 'datetime'">{formatDate($item->{$column->key})}</template>
+                        <template else-if="$column->type === 'boolean'">
+                            <Icon if="{$item->{$column->key}}" name="bi-check2-circle" classList="icon" />
+                        </template>
+                        <template else>{$item->{$column->key}}</template>
+                    </td>
+                </template>
+                <td if="{$remove || $edit}">
+                    <div class="d-flex d-flex justify-content-center">
+                        <a href="/admin/content/{$item->Id}" class="btn btn-sm btn-rounded btn-rounded-primary"
+                            type="button">
+                            <Icon name="bi-pen" />
+                        </a>
+                        <button class="btn btn-sm btn-rounded btn-rounded-primary ms-2" type="button"
+                            (click)="onDelete($item)">
+                            <Icon name="bi-trash" />
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div if="$paging" class="row mt-4 align-items-center">
+        <div class="col-md-6 col-12">
+            Showing {$filter->paging->entityFrom} to {$filter->paging->entityTo} of {$filter->paging->total} entries
+        </div>
+        <div class="text-right col-md-6 col-12">
+            <Pagination paging="$filter->paging" (change)="onPageChange" />
+        </div>
+    </div>
+</div>
