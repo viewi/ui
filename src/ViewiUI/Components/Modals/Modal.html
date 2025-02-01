@@ -1,0 +1,21 @@
+<Overlay if="$show" backdrop>
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable $classList {getSize()}">
+        <div class="modal-content">
+            <button if="$closeButton" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                (click)="onClose"></button>
+            <div if="$header" class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">$header</h1>
+            </div>
+            <div #body class="modal-body">
+                <div if="$title" class="text-center">$title</div>
+                <slot></slot>
+            </div>
+            <div if="{$showCancel || $showConfirm}" class="modal-footer">
+                <button if="$showConfirm" type="button" class="btn $confirmButtonClass"
+                    (click)="onConfirm">$confirmButtonText</button>
+                <button if="$showCancel" type="button" class="btn btn-outline-secondary"
+                    (click)="onCancel">$cancelButtonText</button>
+            </div>
+        </div>
+    </div>
+</Overlay>

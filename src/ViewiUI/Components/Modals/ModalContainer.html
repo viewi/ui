@@ -1,0 +1,3 @@
+<Modal foreach="$modalService->dialogs as $modal" title="{$modal->title}" show="{$modal->show}" closeButton showConfirm
+    confirmButtonText="Confirm" confirmButtonClass="btn-danger" showCancel cancelButtonText="No, cancel"
+    (confirm)="confirm($modal)" (cancel)="cancel($modal)" (close)="cancel($modal)" />
