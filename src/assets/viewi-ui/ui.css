@@ -1,0 +1,25 @@
+.modal-content>.btn-close {
+    align-self: end;
+    margin: 10px 10px 0 0;
+}
+
+.viewi-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.icon {
+    fill: currentColor;
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+}
+
+.icon-sm {
+    width: 1em;
+    height: 1em;
+}
+
+.pagination {
+    margin-bottom: 0;
+}
