@@ -1,0 +1,9 @@
+<button type="submit" disabled="{$state > 0}" class="btn" class.btn-primary="{$state < 2}"
+    class.btn-success="{isSuccess()}" class.btn-danger="{isError()}" (click)="onClick">
+    <span if="isProcessing()" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+    <span if="isProcessing()" role="status">$textProcessing</span>
+    <span if="isError()" role="status">$textFailed</span>
+    <span if="isPending()" role="status">$text</span>
+    <Icon if="isSuccess()" name="bi-check2-circle" />
+    <span if="isSuccess()" role="status">$textSuccess</span>
+</button>
