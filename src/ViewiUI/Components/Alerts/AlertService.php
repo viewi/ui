@@ -14,6 +14,7 @@ class AlertService
     public array $messages = [];
     private int $idGenerator = 0;
 
+    // TODO: until -> dispose auto
     public function message(string $variant, string $body, ?string $title = null, ?int $timeout = null)
     {
         $message = new MessageModel($body, $title, $variant, $timeout);
