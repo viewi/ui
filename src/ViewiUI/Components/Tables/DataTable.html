@@ -17,8 +17,7 @@
     <table class="table align-middle mt-4">
         <thead>
             <tr>
-                <th foreach="$columns as $column" scope="col"
-                    class="{$column->type === 'boolean' ? 'text-center' : ''}">{$column->title ?? $column->key}</th>
+                <th foreach="$columns as $column" scope="col">{$column->title ?? $column->key}</th>
                 <th if="{$remove || $edit}" scope="col" class="text-center">
                     Actions
                 </th>
@@ -30,13 +29,10 @@
                     <template if="{isset($_slots['column_' . $column->key])}">
                         <slot name="{'column_' . $column->key}" data="$item"></slot>
                     </template>
-                    <td else class="{$column->type === 'boolean' ? 'text-center text-success' : ''}">
-                        <template if="$column->type === 'datetime'">{formatDate($item->{$column->key})}</template>
-                        <template else-if="$column->type === 'boolean'">
-                            <Icon if="{$item->{$column->key}}" name="bi-check2-circle" classList="icon" />
-                        </template>
-                        <template else>{$item->{$column->key}}</template>
-                    </td>
+                    <template else-if="{$column->template}">
+                        <{$column->template} data="$item" value="{$item->{$column->key}}" />
+                    </template>
+                    <td else>{$item->{$column->key}}</td>
                 </template>
                 <td if="{$remove || $edit}">
                     <div class="d-flex d-flex justify-content-center">
