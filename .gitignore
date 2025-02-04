@@ -8,3 +8,5 @@ test/js/app/**/*
 test/js/exports/**/*
 test/js/dist/**/*
 test/js/viewi/**/*
+src/js/app/**/*
+src/js/viewi/**/*
