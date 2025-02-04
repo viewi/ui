@@ -1,0 +1,4 @@
+<textarea #input (input)="onInput" rows="$rows" cols="$cols" placeholder="$placeholder" autocomplete="$autocomplete"
+    class="$inputClass form-control d-none" class.is-invalid="$isInvalid" id="$id" name="$name"
+    model="$model"></textarea>
+<CKEditor textarea="$input" (change)="onContentChange" />
