@@ -1,0 +1,8 @@
+<div class="row justify-content-start" class.mb-3="{!$inset}">
+    <label if="$label" for="$id" class="col-form-label">$label</label>
+    <div class="$wrapperClass">
+        <slot></slot>
+    </div>
+    <ValidationMessage #validationMessages />
+    <div if="$hint" class="form-text">$hint</div>
+</div>
