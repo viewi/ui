@@ -4,12 +4,12 @@
             <input type="text" class="form-control" placeholder="Search" aria-label="Search" (input)="onSearch">
         </div>
         <div if="{$add || $addLink}" class="col col-md-6 col-lg-7 col-12 text-end">
-            <a href="$addLink" type="button" class="btn btn-primary">
+            <button type="button" class="btn btn-primary" (click)="onCreate">
                 <div class="d-flex align-items-center">
                     <Icon name="bi-plus-square" classList="bi me-2" width="1.5em" height="1.5em" />
                     $addText
                 </div>
-            </a>
+            </button>
         </div>
     </div>
 
@@ -36,10 +36,10 @@
                 </template>
                 <td if="{$remove || $edit}">
                     <div class="d-flex d-flex justify-content-center">
-                        <a href="/admin/content/{$item->Id}" class="btn btn-sm btn-rounded btn-rounded-primary"
-                            type="button">
+                        <button class="btn btn-sm btn-rounded btn-rounded-primary" type="button"
+                            (click)="onEdit($item)">
                             <Icon name="bi-pen" />
-                        </a>
+                        </button>
                         <button class="btn btn-sm btn-rounded btn-rounded-primary ms-2" type="button"
                             (click)="onDelete($item)">
                             <Icon name="bi-trash" />
