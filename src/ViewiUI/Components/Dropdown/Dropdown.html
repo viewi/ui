@@ -1,0 +1,11 @@
+<div class="row mb-3">
+    <label if="$label" for="$id" class="col-form-label">$label</label>
+    <div class="$wrapperClass">
+        <select #input class="form-select $inputClass" aria-label="$label" model="$model" (change)="onChange" id="$id">
+            <option foreach="$options as $value => $title" value="$value">$title</option>
+        </select>
+    </div>
+    <ValidationMessage #validationMessages />
+    <div if="$hint" class="form-text">$hint</div>
+    <slot></slot>
+</div>
