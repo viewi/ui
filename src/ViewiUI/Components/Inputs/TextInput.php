@@ -35,8 +35,7 @@ class TextInput extends BaseComponent
     public function __construct(
         #[Inject(Scope::PARENT)]
         private ?FormContext $form = null
-    ) {
-    }
+    ) {}
 
     public function mounted()
     {
@@ -59,5 +58,6 @@ class TextInput extends BaseComponent
         $this->validationMessages->show = false;
         $this->isInvalid = false;
         $this->emitEvent('model', $content);
+        $this->emitEvent('input', $content);
     }
 }
