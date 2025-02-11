@@ -1,7 +1,7 @@
 <div class="data-table">
     <div if="{$search || $add || $addLink}" class="row">
         <div if="$search" class="col col-md-6 col-lg-5 col-12 pb-4">
-            <input type="text" class="form-control" placeholder="Search" aria-label="Search" (input)="onSearch">
+            <TextInput placeholder="Search" aria-label="Search" (input)="onSearch" />
         </div>
         <div if="{$add || $addLink}" class="col col-md-6 col-lg-7 col-12 text-end">
             <button type="button" class="btn btn-primary" (click)="onCreate">
@@ -26,7 +26,10 @@
         <tbody>
             <tr foreach="$items as $item">
                 <template foreach="$columns as $column">
-                    <template if="{isset($_slots['column_' . $column->key])}">
+                    <template if="{$changeMode && isset($_slots['edit_' . $column->key]) && $item === $editItem}">
+                        <slot name="{'edit_' . $column->key}" data="$item"></slot>
+                    </template>
+                    <template else-if="{isset($_slots['column_' . $column->key])}">
                         <slot name="{'column_' . $column->key}" data="$item"></slot>
                     </template>
                     <template else-if="{$column->template}">
@@ -36,13 +39,21 @@
                 </template>
                 <td if="{$remove || $edit}">
                     <div class="d-flex d-flex justify-content-center">
-                        <button class="btn btn-sm btn-rounded btn-rounded-primary" type="button"
+                        <button if="{!$changeMode || $item !== $editItem}" class="btn btn-sm btn-rounded btn-rounded-primary" type="button"
                             (click)="onEdit($item)">
                             <Icon name="bi-pen" />
                         </button>
-                        <button class="btn btn-sm btn-rounded btn-rounded-primary ms-2" type="button"
-                            (click)="onDelete($item)">
+                        <button if="{!$changeMode || $item !== $editItem}" class="btn btn-sm btn-rounded btn-rounded-primary ms-2"
+                            type="button" (click)="onDelete($item)">
                             <Icon name="bi-trash" />
+                        </button>
+                        <button if="{$changeMode && $item === $editItem}" class="btn btn-sm btn-rounded btn-rounded-primary" type="button"
+                            (click)="onSave($item)">
+                            <Icon name="bi-floppy" />
+                        </button>
+                        <button if="{$changeMode && $item === $editItem}" class="btn btn-sm btn-rounded btn-rounded-primary ms-2" type="button"
+                            (click)="onCancel($item)">
+                            <Icon name="bi-x-circle" />
                         </button>
                     </div>
                 </td>

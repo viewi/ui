@@ -20,7 +20,10 @@ class DataTable extends BaseComponent
     public bool $edit = true;
     public ?string $addLink = null;
     public ?string $addText = 'Add';
+    public bool $editInline = false;
     public ?TableFilter $filter = null;
+    public $editItem = null;
+    public bool $changeMode = false;
 
     public function __construct(
         #[Inject(Scope::PARENT)]
@@ -32,7 +35,7 @@ class DataTable extends BaseComponent
         if ($this->tableContext !== null) {
             $this->tableContext->onUpdate(function (array $props) {
                 // TODO: make Viewi feature, pass props though context
-                $names = ['id', 'classList', 'items', 'columns', 'search', 'paging', 'add', 'remove', 'edit', 'filter', 'addText'];
+                $names = ['id', 'classList', 'items', 'columns', 'search', 'paging', 'add', 'remove', 'edit', 'filter', 'addText', 'editInline', 'editItem', 'changeMode'];
                 foreach ($names as $name) {
                     if (isset($props[$name])) {
                         $this->{$name} = $props[$name];
@@ -49,9 +52,9 @@ class DataTable extends BaseComponent
         }
     }
 
-    public function onSearch(DomEvent $event)
+    public function onSearch(string $content)
     {
-        $this->filter->searchText = $event->target->value;
+        $this->filter->searchText = $content;
         $this->emitEvent('search', $this->filter->searchText);
         $this->tableContext?->emitEvent('search', $this->filter->searchText);
     }
@@ -64,6 +67,10 @@ class DataTable extends BaseComponent
 
     public function onEdit($item)
     {
+        if ($this->editInline) {
+            $this->editItem = $item;
+            $this->changeMode = true;
+        }
         $this->emitEvent('edit', $item);
         $this->tableContext?->emitEvent('edit', $item);
     }
@@ -72,6 +79,20 @@ class DataTable extends BaseComponent
     {
         $this->emitEvent('create');
         $this->tableContext?->emitEvent('create');
+    }
+
+    public function onSave($item)
+    {
+        $this->emitEvent('save', $item);
+        $this->tableContext?->emitEvent('save', $item);
+    }
+
+    public function onCancel()
+    {
+        $this->editItem = null;
+        $this->changeMode = false;
+        $this->emitEvent('cancel');
+        $this->tableContext?->emitEvent('cancel');
     }
 
     public function onPageChange()
