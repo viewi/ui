@@ -1,0 +1,15 @@
+<div class="accordion-item $classList" id="$id">
+    <h2 class="accordion-header">
+        <button class="accordion-button" class.collapsed="{!$open}" type="button"
+            aria-expanded="{$open ? 'true' : 'false'}" (click)="toggle">
+            $title
+        </button>
+    </h2>
+    <ExpandTransition expanded="$open">
+        <div class="accordion-collapse collapse">
+            <div class="accordion-body">
+                <slot></slot>
+            </div>
+        </div>
+    </ExpandTransition>
+</div>
