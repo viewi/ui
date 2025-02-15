@@ -1,0 +1,25 @@
+<div class="row mb-3">
+    <label if="$label" for="$id" class="col-form-label">$label</label>
+    <div class="$wrapperClass">
+        <div #input class="form-select $inputClass" role="button" aria-label="$label" id="$id" (click)="toggleExpand">
+            <span class="menu-item-title">{getTitle()}</span>
+        </div>
+        <Overlay if="$isExpanded" base="$input" absolute (clickOutside)="$isExpanded = false">
+            <div class="collapse rounded border card show position-relative shadow-sm">
+                <div class="nav-item">
+                    <span if="$nullable" role="button" class="py-2 nav-link d-flex align-items-center px-3"
+                        class.menu-link-active="{$currentValue === null}" (click)="selectItem(null)">
+                        <span class="menu-item-title">(none)</span>
+                    </span>
+                    <span foreach="$items as $key => $item" role="button" class="py-2 nav-link d-flex align-items-center px-3"
+                        class.menu-link-active="{$currentValue === ($associative ? $key : $item)}" (click)="selectItem($associative ? $key : $item, $item)">
+                        <span class="menu-item-title">{$itemTitle ? $item->{$itemTitle} : $item}</span>
+                    </span>
+                </div>
+            </div>
+        </Overlay>
+    </div>
+    <ValidationMessage #validationMessages />
+    <div if="$hint" class="form-text">$hint</div>
+    <slot></slot>
+</div>
