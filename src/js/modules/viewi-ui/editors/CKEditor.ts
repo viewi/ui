@@ -1,11 +1,14 @@
 import { CKEditor } from "../../../app/main/components/Viewi/UI/Components/CKEditor/CKEditor";
 import { loadScript } from "../services/loadScript";
+declare var CKEDITOR: any;
 declare var ClassicEditor: any;
 
 CKEditor.prototype.setUpEditor = function (this: CKEditor) {
     const $this = this;
+    // https://cdn.ckeditor.com/ckeditor5/41.4.2/super-build/ckeditor.js
+    // https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js
     loadScript('https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js', function () {
-        ClassicEditor
+        (ClassicEditor || CKEDITOR?.ClassicEditor)
             .create($this.textarea)
             .then(editor => {
                 if (CKEditor.fileAdapter) {

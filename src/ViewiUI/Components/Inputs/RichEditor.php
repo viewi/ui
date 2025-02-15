@@ -23,6 +23,7 @@ class RichEditor extends BaseComponent
     public ?int $cols = null;
     public $isInvalid = false;
     public bool $inset = false;
+    public bool $codeEditor = false;
 
     public function __construct() {}
 
