@@ -16,20 +16,20 @@ class PaginationModel
 
     public function setTotal(int $total)
     {
-        $this->total = $total;
+        $this->total = +$total;
         $this->calculateInfo();
         $this->calculatePages();
     }
 
     public function setPage(int $page)
     {
-        $this->page = $page;
+        $this->page = +$page;
         $this->calculateInfo();
     }
 
     public function setPageSize(int $size)
     {
-        $this->size = $size;
+        $this->size = +$size;
         $this->calculateInfo();
         $this->calculatePages();
     }
