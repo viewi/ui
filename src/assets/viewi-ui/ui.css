@@ -23,3 +23,7 @@
 .pagination {
     margin-bottom: 0;
 }
+
+.alert:not(.show) {
+    display: none;
+}
