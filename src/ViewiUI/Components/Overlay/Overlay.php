@@ -52,14 +52,14 @@ class Overlay extends BaseComponent
                 $this->onOutside();
             }
         };
-        $this->dom->getDocument()->addEventListener('click', $this->onDocumentClick);
+        $this->dom->getDocument()?->addEventListener('click', $this->onDocumentClick);
     }
 
     public function destroy()
     {
         // dispose stack
         $this->stack->put($this->zIndex);
-        $this->dom->getDocument()->removeEventListener('click', $this->onDocumentClick);
+        $this->dom->getDocument()?->removeEventListener('click', $this->onDocumentClick);
     }
 
     public function onOutside()
