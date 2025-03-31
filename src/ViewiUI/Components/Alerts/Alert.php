@@ -11,6 +11,7 @@ class Alert extends BaseComponent
     public string $variant = '';
     public ?int $timeout = null;
     public bool $show = true;
+    public bool $dismissible = true;
     public string $icon = '';
 
     public function variantClass()
