@@ -23,16 +23,18 @@ class CheckBox extends BaseComponent
 
     public function __construct(
         #[Inject(Scope::PARENT)]
-        private FormContext $form
+        private ?FormContext $form
     ) {}
 
     public function mounted()
     {
-        $this->form->inputs[$this->id ?? $this->name ?? $this->__id] = function ($valid, $errors) {
-            $this->isInvalid = !$valid;
-            $this->validationMessages->show = $this->isInvalid;
-            $this->validationMessages->messages = $errors;
-        };
+        if ($this->form !== null) {
+            $this->form->inputs[$this->id ?? $this->name ?? $this->__id] = function ($valid, $errors) {
+                $this->isInvalid = !$valid;
+                $this->validationMessages->show = $this->isInvalid;
+                $this->validationMessages->messages = $errors;
+            };
+        }
     }
 
     public function onChange(DomEvent $event)
