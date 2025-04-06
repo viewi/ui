@@ -1,10 +1,10 @@
 <Overlay if="$show" backdrop>
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable $classList {getSize()}">
         <div class="modal-content">
-            <button if="$closeButton" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                (click)="onClose"></button>
-            <div if="$header" class="modal-header">
+            <div if="{$header || $closeButton}" class="modal-header">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">$header</h1>
+                <button if="$closeButton" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="onClose"></button>
             </div>
             <div #body class="modal-body">
                 <div if="$title" class="text-center">$title</div>
