@@ -8,6 +8,7 @@ use Viewi\Components\DOM\HtmlNode;
 
 class Modal extends BaseComponent
 {
+    public ?string $id = null;
     public bool $show = false;
     public bool $closeButton = false;
     public ?string $header = null;

@@ -6,8 +6,8 @@ use Viewi\Components\BaseComponent;
 
 class Alert extends BaseComponent
 {
+    public ?string $id = null;
     public string $body;
-    public ?string $title = null;
     public string $variant = '';
     public ?int $timeout = null;
     public bool $show = true;
