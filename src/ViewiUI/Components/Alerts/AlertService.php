@@ -15,31 +15,31 @@ class AlertService
     private int $idGenerator = 0;
 
     // TODO: until -> dispose auto
-    public function message(string $variant, string $body, ?string $title = null, ?int $timeout = null)
+    public function message(string $variant, string $body, ?int $timeout = null)
     {
-        $message = new MessageModel($body, $title, $variant, $timeout);
+        $message = new MessageModel($body, $variant, $timeout);
         $message->id = 'alert' . (++$this->idGenerator);
         $this->messages = [...$this->messages, $message];
     }
 
-    public function success(string $message, ?string $title = null, ?int $timeout = null)
+    public function success(string $message, ?int $timeout = null)
     {
-        $this->message('success', $message, $title, $timeout);
+        $this->message('success', $message, $timeout);
     }
 
-    public function error(string $message, ?string $title = null, ?int $timeout = null)
+    public function error(string $message, ?int $timeout = null)
     {
-        $this->message('error', $message, $title, $timeout);
+        $this->message('error', $message, $timeout);
     }
 
-    public function warning(string $message, ?string $title = null, ?int $timeout = null)
+    public function warning(string $message, ?int $timeout = null)
     {
-        $this->message('warning', $message, $title, $timeout);
+        $this->message('warning', $message, $timeout);
     }
 
-    public function info(string $message, ?string $title = null, ?int $timeout = null)
+    public function info(string $message, ?int $timeout = null)
     {
-        $this->message('info', $message, $title, $timeout);
+        $this->message('info', $message, $timeout);
     }
 
     public function remove(MessageModel $message)
