@@ -14,6 +14,7 @@ class SelectInput extends BaseComponent
     public array $items = [];
     public ?string $label = null;
     public ?string $hint = null;
+    public string $placeholder = 'Please select';
     public ?string $inputClass = null;
     public ?string $wrapperClass = null;
     public ?string $id = null;
@@ -84,6 +85,6 @@ class SelectInput extends BaseComponent
         if ($this->currentValue) {
             return $this->itemTitle ? $this->currentValue->{$this->itemTitle} : $this->currentTitle;
         }
-        return 'Please select';
+        return $this->placeholder;
     }
 }

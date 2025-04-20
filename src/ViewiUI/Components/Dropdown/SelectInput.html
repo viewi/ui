@@ -9,7 +9,7 @@
                 <div class="nav-item">
                     <span if="$nullable" role="button" class="py-2 nav-link d-flex align-items-center px-3"
                         class.menu-link-active="{$currentValue === null}" (click)="selectItem(null)">
-                        <span class="menu-item-title">(none)</span>
+                        <span class="menu-item-title">$placeholder</span>
                     </span>
                     <span foreach="$items as $key => $item" role="button" class="py-2 nav-link d-flex align-items-center px-3"
                         class.menu-link-active="{$currentValue === ($associative ? $key : $item)}" (click)="selectItem($associative ? $key : $item, $item)">
