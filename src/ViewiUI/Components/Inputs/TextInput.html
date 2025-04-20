@@ -3,11 +3,9 @@
     <div class="$wrapperClass">
         <textarea if="$textarea" #input (input)="onInput" type="$type" rows="$rows" cols="$cols"
             placeholder="$placeholder" autocomplete="$autocomplete" class="$inputClass form-control"
-            class.is-invalid="$isInvalid" class.d-none="$codeEditor" id="$id" name="$name" model="$model"></textarea>
+            class.is-invalid="$isInvalid" id="$id" name="$name" model="$model"></textarea>
         <input else #input (input)="onInput" type="$type" placeholder="$placeholder" autocomplete="$autocomplete"
             class="$inputClass form-control" class.is-invalid="$isInvalid" id="$id" name="$name" model="$model">
-        <!-- <CKEditor if="$richEditor" textarea="$input" (change)="onContentChange" />
-        <CodeEditor if="$codeEditor" (change)="onContentChange" model="$model" />         -->
     </div>
     <ValidationMessage #validationMessages />
     <div if="$hint" class="form-text">$hint</div>
