@@ -42,5 +42,6 @@ class CheckBox extends BaseComponent
         $this->validationMessages->show = false;
         $this->isInvalid = false;
         $this->emitEvent('model', $event->target->checked);
+        $this->emitEvent('change', $event->target->checked);
     }
 }
