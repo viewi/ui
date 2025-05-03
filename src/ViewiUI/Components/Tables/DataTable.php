@@ -13,11 +13,11 @@ class DataTable extends BaseComponent
     public ?string $classList = null;
     public array $items = [];
     public array $columns = [];
-    public bool $search = true;
-    public bool $paging = true;
-    public bool $add = true;
-    public bool $remove = true;
-    public bool $edit = true;
+    public bool $search = false;
+    public bool $paging = false;
+    public bool $add = false;
+    public bool $remove = false;
+    public bool $edit = false;
     public ?string $addLink = null;
     public ?string $addText = 'Add';
     public bool $editInline = false;
