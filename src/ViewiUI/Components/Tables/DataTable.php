@@ -22,6 +22,8 @@ class DataTable extends BaseComponent
     public ?string $addText = 'Add';
     public bool $editInline = false;
     public ?TableFilter $filter = null;
+    public ?int $total = null;
+    public ?int $pageSize = null;
     public $editItem = null;
     public bool $changeMode = false;
 
@@ -48,8 +50,15 @@ class DataTable extends BaseComponent
     public function mounted()
     {
         if ($this->filter === null) {
-            $this->filter = new TableFilter();
+            $this->filter = new TableFilter(+($this->pageSize ?? 10));
+            $this->filter->paging->setTotal(+($this->total ?? count($this->items)));
         }
+    }
+
+    public function finishEdit()
+    {
+        $this->changeMode = false;
+        $this->editItem = null;
     }
 
     public function onSearch(string $content)
@@ -89,10 +98,11 @@ class DataTable extends BaseComponent
 
     public function onCancel()
     {
+        $editedItem = $this->editItem;
         $this->editItem = null;
         $this->changeMode = false;
-        $this->emitEvent('cancel');
-        $this->tableContext?->emitEvent('cancel');
+        $this->emitEvent('cancel', $editedItem);
+        $this->tableContext?->emitEvent('cancel', $editedItem);
     }
 
     public function onPageChange()
