@@ -27,3 +27,25 @@
 .alert:not(.show) {
     display: none;
 }
+
+.icon-btn {
+    width: 2.5em;
+    height: 2.5em;
+    min-width: 2.5em;
+    min-height: 2.5em;
+}
+
+.d-flex-collapse.show,
+.d-flex-collapse.collapsing {
+    display: flex !important;
+}
+
+@media (min-width: 768px) {
+    .position-md-absolute {
+        position: absolute !important;
+    }
+
+    .position-md-relative {
+        position: relative !important;
+    }
+}
