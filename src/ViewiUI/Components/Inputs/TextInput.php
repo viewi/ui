@@ -24,6 +24,7 @@ class TextInput extends BaseComponent
     public ?string $model = null;
     public ?HtmlNode $input = null;
     public bool $textarea = false;
+    public bool $readonly = false;
     public ?int $rows = null;
     public ?int $cols = null;
     private ?ValidationMessage $validationMessages = null;
