@@ -50,8 +50,8 @@ class DataTable extends BaseComponent
     public function mounted()
     {
         if ($this->filter === null) {
-            $this->filter = new TableFilter(+($this->pageSize ?? 10));
-            $this->filter->paging->setTotal(+($this->total ?? count($this->items)));
+            $this->filter = new TableFilter(+ ($this->pageSize ?? 10));
+            $this->filter->paging->setTotal(+ ($this->total ?? count($this->items)));
         }
     }
 
@@ -64,6 +64,7 @@ class DataTable extends BaseComponent
     public function onSearch(string $content)
     {
         $this->filter->searchText = $content;
+        $this->filter->paging->page = 1;
         $this->emitEvent('search', $this->filter->searchText);
         $this->tableContext?->emitEvent('search', $this->filter->searchText);
     }
