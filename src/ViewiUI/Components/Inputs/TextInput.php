@@ -30,6 +30,7 @@ class TextInput extends BaseComponent
     private ?ValidationMessage $validationMessages = null;
     public $isInvalid = false;
     public bool $inset = false;
+    public bool $clearable = false;
 
     public function __construct(
         #[Inject(Scope::PARENT)]
@@ -58,5 +59,11 @@ class TextInput extends BaseComponent
         $this->isInvalid = false;
         $this->emitEvent('model', $content);
         $this->emitEvent('input', $content);
+    }
+
+    public function clear()
+    {
+        $this->onContentChange(null);
+        $this->emitEvent('clear', true);
     }
 }

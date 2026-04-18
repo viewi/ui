@@ -1,11 +1,15 @@
 <div class="row justify-content-start" class.mb-3="{!$inset}">
     <label if="$label" for="$id" class="col-form-label">$label</label>
-    <div class="$wrapperClass">
+    <div class="$wrapperClass input-group">
         <textarea if="$textarea" #input (input)="onInput" type="$type" rows="$rows" cols="$cols"
             placeholder="$placeholder" autocomplete="$autocomplete" class="$inputClass form-control"
             class.is-invalid="$isInvalid" id="$id" name="$name" model="$model" readonly="$readonly"></textarea>
         <input else #input (input)="onInput" type="$type" placeholder="$placeholder" autocomplete="$autocomplete"
-            class="$inputClass form-control" class.is-invalid="$isInvalid" id="$id" readonly="$readonly" name="$name" model="$model">
+            class="$inputClass form-control" class.is-invalid="$isInvalid" id="$id" readonly="$readonly" name="$name"
+            model="$model">
+        <button if="$clearable" type="button" class="btn btn-outline-secondary" (click)="clear">
+            <Icon name="bi-x" />
+        </button>
     </div>
     <ValidationMessage #validationMessages />
     <div if="$hint" class="form-text">$hint</div>
