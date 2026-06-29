@@ -1,0 +1,42 @@
+<div>
+    <button #trigger type="button" class="btn btn-outline-secondary btn-sm" class.active="$isExpanded"
+        (click)="toggleOpen">
+        <Icon name="bi-calendar3" /> {$triggerLabel}
+    </button>
+    <Overlay if="$isExpanded" base="$trigger" absolute autoWidth (clickOutside)="cancel">
+        <div class="card shadow p-2" style="width:290px">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary" (click)="prevMonth" title="Previous month">
+                    <Icon name="bi-chevron-left" />
+                </button>
+                <span class="fw-semibold small">{$monthLabel}</span>
+                <button type="button" class="btn btn-sm btn-outline-secondary" (click)="nextMonth" title="Next month">
+                    <Icon name="bi-chevron-right" />
+                </button>
+            </div>
+            <div class="text-muted small mb-1"
+                style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center">
+                <div>Mo</div>
+                <div>Tu</div>
+                <div>We</div>
+                <div>Th</div>
+                <div>Fr</div>
+                <div>Sa</div>
+                <div>Su</div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px">
+                <button foreach="$days as $d" type="button" class="btn btn-sm border-0 px-0"
+                    class.btn-primary="{$d->isStart || $d->isEnd}" class.btn-light="$d->inRange"
+                    class.text-muted="{!$d->inMonth}" class.fw-bold="$d->isToday" disabled="$d->disabled"
+                    (click)="pickDay($d)">{$d->day}</button>
+            </div>
+            <div class="text-muted small mt-2">{$selectionLabel}</div>
+            <div class="d-flex justify-content-end gap-2 mt-2">
+                <button type="button" class="btn btn-sm btn-link text-muted text-decoration-none"
+                    (click)="cancel">Cancel</button>
+                <button type="button" class="btn btn-sm btn-primary" disabled="{$selStart === ''}"
+                    (click)="apply">Apply</button>
+            </div>
+        </div>
+    </Overlay>
+</div>
