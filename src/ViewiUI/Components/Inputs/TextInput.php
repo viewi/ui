@@ -31,6 +31,12 @@ class TextInput extends BaseComponent
     public $isInvalid = false;
     public bool $inset = false;
     public bool $clearable = false;
+    // Password-style helpers: an eye toggle that unmasks the field, and a copy-to-clipboard button.
+    // Handy for reversible secrets (e.g. a short-link access password) the owner needs to view/re-share.
+    public bool $revealable = false;
+    public bool $copyable = false;
+    public bool $revealed = false;
+    public bool $copied = false;
 
     public function __construct(
         #[Inject(Scope::PARENT)]
@@ -65,5 +71,21 @@ class TextInput extends BaseComponent
     {
         $this->onContentChange(null);
         $this->emitEvent('clear', true);
+    }
+
+    public function toggleReveal()
+    {
+        $this->revealed = !$this->revealed;
+    }
+
+    public function copyValue(DomEvent $event)
+    {
+        $event->preventDefault();
+        <<<'javascript'
+        navigator.clipboard.writeText($this.model || '').then(() => {
+        $this.copied = true;
+        setTimeout(() => { $this.copied = false; }, 1500);
+        });
+        javascript;
     }
 }

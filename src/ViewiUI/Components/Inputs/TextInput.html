@@ -4,9 +4,18 @@
         <textarea if="$textarea" #input (input)="onInput" type="$type" rows="$rows" cols="$cols"
             placeholder="$placeholder" autocomplete="$autocomplete" class="$inputClass form-control"
             class.is-invalid="$isInvalid" id="$id" name="$name" model="$model" readonly="$readonly"></textarea>
-        <input else #input (input)="onInput" type="$type" placeholder="$placeholder" autocomplete="$autocomplete"
+        <input else #input (input)="onInput" type="{$revealable && $revealed ? 'text' : $type}"
+            placeholder="$placeholder" autocomplete="$autocomplete"
             class="$inputClass form-control" class.is-invalid="$isInvalid" id="$id" readonly="$readonly" name="$name"
             model="$model">
+        <button if="$revealable" type="button" tabindex="-1" class="btn btn-outline-secondary" (click)="toggleReveal"
+            aria-label="{$revealed ? 'Hide' : 'Show'}">
+            <Icon name="{$revealed ? 'bi-eye-slash' : 'bi-eye'}" />
+        </button>
+        <button if="$copyable" type="button" tabindex="-1" class="btn btn-outline-secondary" (click)="copyValue"
+            aria-label="Copy">
+            <Icon name="{$copied ? 'bi-clipboard-check' : 'bi-clipboard'}" />
+        </button>
         <button if="$clearable" type="button" class="btn btn-outline-secondary" (click)="clear">
             <Icon name="bi-x" />
         </button>
