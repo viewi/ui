@@ -83,7 +83,9 @@ class SelectInput extends BaseComponent
     public function getTitle()
     {
         if ($this->currentValue) {
-            return $this->itemTitle ? $this->currentValue->{$this->itemTitle} : $this->currentTitle;
+            // plain (string/int) items have no title captured until selectItem —
+            // fall back to the value itself so the initial model renders
+            return $this->itemTitle ? $this->currentValue->{$this->itemTitle} : ($this->currentTitle !== null ? $this->currentTitle : $this->currentValue);
         }
         return $this->placeholder;
     }
