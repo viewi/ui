@@ -39,11 +39,11 @@
                 </template>
                 <td if="{$remove || $edit}">
                     <div class="d-flex d-flex justify-content-center">
-                        <button if="{!$changeMode || $item !== $editItem}" class="btn btn-sm btn-rounded btn-rounded-primary" type="button"
+                        <button if="{$edit && (!$changeMode || $item !== $editItem)}" class="btn btn-sm btn-rounded btn-rounded-primary" type="button"
                             (click)="onEdit($item)">
                             <Icon name="bi-pen" />
                         </button>
-                        <button if="{!$changeMode || $item !== $editItem}" class="btn btn-sm btn-rounded btn-rounded-primary ms-2"
+                        <button if="{$remove && (!$changeMode || $item !== $editItem)}" class="btn btn-sm btn-rounded btn-rounded-primary ms-2"
                             type="button" (click)="onDelete($item)">
                             <Icon name="bi-trash" />
                         </button>
