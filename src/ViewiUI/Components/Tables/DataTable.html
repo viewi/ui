@@ -1,10 +1,12 @@
 <div class="data-table">
-    <div if="{$search || $add || $addLink}" class="row">
+    <div if="{$search || $add || $addLink || isset($_slots['actions'])}" class="row">
         <div if="$search" class="col col-md-6 col-lg-5 col-12 pb-4">
             <TextInput placeholder="Search" aria-label="Search" (input)="onSearch" />
         </div>
-        <div if="{$add || $addLink}" class="col col-md-6 col-lg-7 col-12 text-end">
-            <button type="button" class="btn btn-primary" (click)="onCreate">
+        <div if="{$add || $addLink || isset($_slots['actions'])}" class="col col-md-6 col-lg-7 col-12 text-end">
+            <!-- 'actions' slot: extra toolbar buttons rendered inline before the Add button. -->
+            <slot name="actions"></slot>
+            <button if="{$add || $addLink}" type="button" class="btn btn-primary" (click)="onCreate">
                 <div class="d-flex align-items-center">
                     <Icon name="bi-plus-square" classList="bi me-2" width="1.5em" height="1.5em" />
                     $addText
