@@ -1,7 +1,7 @@
 <div class="data-table">
     <div if="{$search || $add || $addLink || isset($_slots['actions'])}" class="row">
         <div if="$search" class="col col-md-6 col-lg-5 col-12 pb-4">
-            <TextInput placeholder="Search" aria-label="Search" (input)="onSearch" />
+            <TextInput placeholder="Search" aria-label="Search" model="$searchValue" (input)="onSearch" />
         </div>
         <div if="{$add || $addLink || isset($_slots['actions'])}" class="col col-md-6 col-lg-7 col-12 text-end">
             <!-- 'actions' slot: extra toolbar buttons rendered inline before the Add button. -->
@@ -16,7 +16,7 @@
     </div>
 
 
-    <table class="table align-middle mt-4">
+    <table if="{count($items) > 0}" class="table align-middle mt-4">
         <thead>
             <tr>
                 <th foreach="$columns as $column" scope="col">{$column->title ?? $column->key}</th>
@@ -62,7 +62,27 @@
             </tr>
         </tbody>
     </table>
-    <div if="$paging" class="row mt-4 align-items-center">
+    <!-- Nothing to list: explain what belongs here and offer the create action,
+         instead of leaving a bare header over blank space. Pass emptyIcon/
+         emptyTitle/emptyText to tailor the copy, or fill the 'empty' slot to
+         replace the whole block. -->
+    <div if="{count($items) === 0}">
+        <!-- Filtered to nothing: offer to clear the search, never "add your first". -->
+        <EmptyState if="{isFiltered()}" icon="bi-search" title="No matches"
+            description="Nothing matched your search. Try a different term.">
+            <slotContent name="action">
+                <button type="button" class="btn btn-outline-secondary" (click)="clearSearch">Clear search</button>
+            </slotContent>
+        </EmptyState>
+        <slot if="{!isFiltered() && isset($_slots['empty'])}" name="empty"></slot>
+        <EmptyState if="{!isFiltered() && !isset($_slots['empty'])}" icon="$emptyIcon" title="$emptyTitle"
+            description="$emptyText">
+            <slotContent name="action">
+                <button if="{$add || $addLink}" type="button" class="btn btn-primary" (click)="onCreate">$addText</button>
+            </slotContent>
+        </EmptyState>
+    </div>
+    <div if="{$paging && count($items) > 0}" class="row mt-4 align-items-center">
         <div class="col-md-6 col-12">
             Showing {$filter->paging->entityFrom} to {$filter->paging->entityTo} of {$filter->paging->total} entries
         </div>

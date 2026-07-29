@@ -26,6 +26,28 @@ class DataTable extends BaseComponent
     public ?int $pageSize = null;
     public $editItem = null;
     public bool $changeMode = false;
+    /** Empty-state copy shown when there are no rows (see the 'empty' slot to override wholesale). */
+    public string $emptyIcon = 'bi-inbox';
+    public string $emptyTitle = 'Nothing here yet';
+    public string $emptyText = '';
+    /** Bound to the search box so "Clear search" can visibly reset it. */
+    public string $searchValue = '';
+
+    /**
+     * "No rows" has two very different causes and must not share one message: the
+     * list is genuinely empty (offer the create action), or the current search
+     * filtered everything out (offer to clear it — offering "Add" there is wrong).
+     */
+    public function isFiltered(): bool
+    {
+        return $this->filter !== null && $this->filter->searchText !== '';
+    }
+
+    public function clearSearch()
+    {
+        $this->searchValue = '';
+        $this->onSearch('');
+    }
 
     public function __construct(
         #[Inject(Scope::PARENT)]

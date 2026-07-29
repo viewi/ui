@@ -1,0 +1,12 @@
+<div id="$id" class="text-center py-5 {$classList}">
+    <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-body-tertiary border text-body-secondary mb-3"
+        style="width:64px;height:64px">
+        <Icon name="$icon" width="28" height="28" />
+    </div>
+    <div class="h6 mb-1">$title</div>
+    <p if="{$description !== ''}" class="text-muted small mb-0 mx-auto" style="max-width:34rem">$description</p>
+    <div if="{($actionText !== '' && $actionLink !== null) || isset($_slots['action'])}" class="mt-3">
+        <a if="{$actionText !== '' && $actionLink !== null}" href="$actionLink" class="btn btn-primary">$actionText</a>
+        <slot name="action"></slot>
+    </div>
+</div>
