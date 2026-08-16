@@ -3,7 +3,7 @@
         <div if="$search" class="col col-md-6 col-lg-5 col-12 pb-4">
             <TextInput placeholder="Search" aria-label="Search" model="$searchValue" (input)="onSearch" />
         </div>
-        <div if="{$add || $addLink || isset($_slots['actions'])}" class="col col-md-6 col-lg-7 col-12 text-end">
+        <div if="{$add || $addLink || isset($_slots['actions'])}" class="col col-md-6 col-lg-7 col-12 text-end center-sm">
             <!-- 'actions' slot: extra toolbar buttons rendered inline before the Add button. -->
             <slot name="actions"></slot>
             <button if="{$add || $addLink}" type="button" class="btn btn-primary" (click)="onCreate">
@@ -16,52 +16,55 @@
     </div>
 
 
-    <table if="{count($items) > 0}" class="table align-middle mt-4">
-        <thead>
-            <tr>
-                <th foreach="$columns as $column" scope="col">{$column->title ?? $column->key}</th>
-                <th if="{$remove || $edit}" scope="col" class="text-center">
-                    Actions
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr foreach="$items as $item">
-                <template foreach="$columns as $column">
-                    <template if="{$changeMode && isset($_slots['edit_' . $column->key]) && $item === $editItem}">
-                        <slot name="{'edit_' . $column->key}" data="$item"></slot>
+    <!-- Scrolls sideways instead of pushing the page wider than the phone. -->
+    <div if="{count($items) > 0}" class="table-responsive">
+        <table class="table align-middle mt-4">
+            <thead>
+                <tr>
+                    <th foreach="$columns as $column" scope="col">{$column->title ?? $column->key}</th>
+                    <th if="{$remove || $edit}" scope="col" class="text-center">
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr foreach="$items as $item">
+                    <template foreach="$columns as $column">
+                        <template if="{$changeMode && isset($_slots['edit_' . $column->key]) && $item === $editItem}">
+                            <slot name="{'edit_' . $column->key}" data="$item"></slot>
+                        </template>
+                        <template else-if="{isset($_slots['column_' . $column->key])}">
+                            <slot name="{'column_' . $column->key}" data="$item"></slot>
+                        </template>
+                        <template else-if="{$column->template}">
+                            <{$column->template} data="$item" value="{$item->{$column->key}}" />
+                        </template>
+                        <td else>{$item->{$column->key}}</td>
                     </template>
-                    <template else-if="{isset($_slots['column_' . $column->key])}">
-                        <slot name="{'column_' . $column->key}" data="$item"></slot>
-                    </template>
-                    <template else-if="{$column->template}">
-                        <{$column->template} data="$item" value="{$item->{$column->key}}" />
-                    </template>
-                    <td else>{$item->{$column->key}}</td>
-                </template>
-                <td if="{$remove || $edit}">
-                    <div class="d-flex d-flex justify-content-center">
-                        <button if="{$edit && (!$changeMode || $item !== $editItem)}" class="btn btn-sm btn-rounded btn-rounded-primary" type="button"
-                            (click)="onEdit($item)">
-                            <Icon name="bi-pen" />
-                        </button>
-                        <button if="{$remove && (!$changeMode || $item !== $editItem)}" class="btn btn-sm btn-rounded btn-rounded-primary ms-2"
-                            type="button" (click)="onDelete($item)">
-                            <Icon name="bi-trash" />
-                        </button>
-                        <button if="{$changeMode && $item === $editItem}" class="btn btn-sm btn-rounded btn-rounded-primary" type="button"
-                            (click)="onSave($item)">
-                            <Icon name="bi-floppy" />
-                        </button>
-                        <button if="{$changeMode && $item === $editItem}" class="btn btn-sm btn-rounded btn-rounded-primary ms-2" type="button"
-                            (click)="onCancel($item)">
-                            <Icon name="bi-x-circle" />
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                    <td if="{$remove || $edit}">
+                        <div class="d-flex d-flex justify-content-center">
+                            <button if="{$edit && (!$changeMode || $item !== $editItem)}" class="btn btn-sm btn-rounded btn-rounded-primary" type="button"
+                                (click)="onEdit($item)">
+                                <Icon name="bi-pen" />
+                            </button>
+                            <button if="{$remove && (!$changeMode || $item !== $editItem)}" class="btn btn-sm btn-rounded btn-rounded-primary ms-2"
+                                type="button" (click)="onDelete($item)">
+                                <Icon name="bi-trash" />
+                            </button>
+                            <button if="{$changeMode && $item === $editItem}" class="btn btn-sm btn-rounded btn-rounded-primary" type="button"
+                                (click)="onSave($item)">
+                                <Icon name="bi-floppy" />
+                            </button>
+                            <button if="{$changeMode && $item === $editItem}" class="btn btn-sm btn-rounded btn-rounded-primary ms-2" type="button"
+                                (click)="onCancel($item)">
+                                <Icon name="bi-x-circle" />
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <!-- Nothing to list: explain what belongs here and offer the create action,
          instead of leaving a bare header over blank space. Pass emptyIcon/
          emptyTitle/emptyText to tailor the copy, or fill the 'empty' slot to
@@ -83,10 +86,10 @@
         </EmptyState>
     </div>
     <div if="{$paging && count($items) > 0}" class="row mt-4 align-items-center">
-        <div class="col-md-6 col-12">
+        <div class="col-md-6 col-12 center-sm">
             Showing {$filter->paging->entityFrom} to {$filter->paging->entityTo} of {$filter->paging->total} entries
         </div>
-        <div class="text-right col-md-6 col-12">
+        <div class="text-right col-md-6 col-12 center-sm">
             <Pagination paging="$filter->paging" (change)="onPageChange" />
         </div>
     </div>
