@@ -49,3 +49,78 @@
         position: relative !important;
     }
 }
+/* DataTable `stacked` (also usable on a hand-written table): on a phone every
+   row becomes a card. The cells flow inline, each prefixed with its data-label;
+   .table-stacked-main cells move to the top at full width, the row actions
+   (.table-stacked-actions) are pushed to the end of the last line. */
+@media (max-width: 575.98px) {
+    .table-stacked thead {
+        display: none;
+    }
+
+    .table-stacked,
+    .table-stacked tbody {
+        display: block;
+    }
+
+    .table-stacked tbody tr {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        column-gap: 0.75rem;
+        row-gap: 0.35rem;
+        padding: 0.75rem 0;
+        border-bottom: var(--bs-border-width) solid var(--bs-border-color);
+    }
+
+    .table-stacked tbody tr:last-child {
+        border-bottom: 0;
+    }
+
+    .table-stacked tbody td {
+        display: block;
+        width: auto;
+        padding: 0;
+        border: 0;
+        text-align: start;
+    }
+
+    .table-stacked tbody td.table-stacked-main {
+        order: -1;
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+
+    .table-stacked tbody td[data-label]:not([data-label=""])::before {
+        content: attr(data-label);
+        margin-right: 0.35rem;
+        font-size: 0.7rem;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: var(--bs-secondary-color);
+    }
+
+    .table-stacked tbody td.table-stacked-actions {
+        margin-left: auto;
+    }
+}
+
+/* A long unbreakable value (a user's 1,000-character URL) cut to two lines at any
+   width — pair it with title="…" so the full text is a hover away. Put it on an
+   element INSIDE a <td>, never on the td itself: it changes display. */
+.text-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}
+
+/* A table column that must keep room for text: with overflow-wrap:anywhere its
+   min-content width is one character, so the auto layout would starve it. Only a
+   floor — a long value's max-content already pulls any spare width its way, so a
+   bigger one just pushes a wide table past its card. A stacked row's main cell
+   resets this on phones. */
+.cell-wide {
+    min-width: 10rem;
+}

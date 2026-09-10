@@ -18,7 +18,7 @@
 
     <!-- Scrolls sideways instead of pushing the page wider than the phone. -->
     <div if="{count($items) > 0}" class="table-responsive">
-        <table class="table align-middle mt-4">
+        <table class="table align-middle mt-4" class.table-stacked="$stacked">
             <thead>
                 <tr>
                     <th foreach="$columns as $column" scope="col">{$column->title ?? $column->key}</th>
@@ -37,11 +37,11 @@
                             <slot name="{'column_' . $column->key}" data="$item"></slot>
                         </template>
                         <template else-if="{$column->template}">
-                            <{$column->template} data="$item" value="{$item->{$column->key}}" />
+                            <{$column->template} data="$item" value="{$item->{$column->key}}" label="{$column->title ?? $column->key}" />
                         </template>
-                        <td else>{$item->{$column->key}}</td>
+                        <td else data-label="{$column->title ?? $column->key}">{$item->{$column->key}}</td>
                     </template>
-                    <td if="{$remove || $edit}">
+                    <td if="{$remove || $edit}" class="table-stacked-actions">
                         <div class="d-flex d-flex justify-content-center">
                             <button if="{$edit && (!$changeMode || $item !== $editItem)}" class="btn btn-sm btn-rounded btn-rounded-primary" type="button"
                                 (click)="onEdit($item)">

@@ -21,6 +21,14 @@ class DataTable extends BaseComponent
     public ?string $addLink = null;
     public ?string $addText = 'Add';
     public bool $editInline = false;
+    /**
+     * On a phone (< 576px) lay each row out as a card instead of a sideways-scrolling
+     * table (`.table-stacked` in ui.css). Cells flow inline with their column title as
+     * a label; mark the cells that carry the row's identity with `table-stacked-main`
+     * to lift them to the top at full width. Column templates receive the title as
+     * `label` so they can render it as `data-label` too.
+     */
+    public bool $stacked = false;
     public ?TableFilter $filter = null;
     public ?int $total = null;
     public ?int $pageSize = null;
