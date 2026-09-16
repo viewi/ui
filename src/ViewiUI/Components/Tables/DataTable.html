@@ -1,9 +1,12 @@
 <div class="data-table">
-    <div if="{$search || $add || $addLink || isset($_slots['actions'])}" class="row">
-        <div if="$search" class="col col-md-6 col-lg-5 col-12 pb-4">
+    <div if="{$search || $add || $addLink || isset($_slots['actions'])}" class="row data-table-toolbar">
+        <div if="$search" class="col col-md-6 col-lg-4 col-12 pb-4">
             <TextInput placeholder="Search" aria-label="Search" model="$searchValue" (input)="onSearch" />
         </div>
-        <div if="{$add || $addLink || isset($_slots['actions'])}" class="col col-md-6 col-lg-7 col-12 text-end center-sm">
+        <!-- Flex with a gap, so buttons that run out of room wrap onto a second line with space
+             between them instead of touching. Slot buttons need no margins of their own. -->
+        <div if="{$add || $addLink || isset($_slots['actions'])}"
+            class="col col-md-6 col-lg-8 col-12 pb-4 d-flex flex-wrap justify-content-end align-items-start gap-2 data-table-actions">
             <!-- 'actions' slot: extra toolbar buttons rendered inline before the Add button. -->
             <slot name="actions"></slot>
             <button if="{$add || $addLink}" type="button" class="btn btn-primary" (click)="onCreate">
@@ -21,7 +24,7 @@
         <table class="table align-middle mt-4" class.table-stacked="$stacked">
             <thead>
                 <tr>
-                    <th foreach="$columns as $column" scope="col">{$column->title ?? $column->key}</th>
+                    <th foreach="$columns as $column" scope="col" class="{$column->cssClass ?? ''}">{$column->title ?? $column->key}</th>
                     <th if="{$remove || $edit}" scope="col" class="text-center">
                         Actions
                     </th>

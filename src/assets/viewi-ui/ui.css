@@ -49,11 +49,13 @@
         position: relative !important;
     }
 }
-/* DataTable `stacked` (also usable on a hand-written table): on a phone every
+/* DataTable `stacked` (also usable on a hand-written table): below 920px every
    row becomes a card. The cells flow inline, each prefixed with its data-label;
    .table-stacked-main cells move to the top at full width, the row actions
-   (.table-stacked-actions) are pushed to the end of the last line. */
-@media (max-width: 575.98px) {
+   (.table-stacked-actions) are pushed to the end of the last line.
+   920px, not a phone breakpoint: a table with a link, a date and actions is already
+   cramped on a narrow laptop or a tablet, next to the app's sidebar. */
+@media (max-width: 919.98px) {
     .table-stacked thead {
         display: none;
     }
@@ -102,6 +104,28 @@
 
     .table-stacked tbody td.table-stacked-actions {
         margin-left: auto;
+    }
+}
+
+/* DataTable toolbar, same 920px: search and actions each take a full row and the
+   buttons centre, instead of three buttons wrapping inside half a row. */
+@media (max-width: 919.98px) {
+    .data-table-toolbar > .col {
+        width: 100%;
+    }
+
+    .data-table-toolbar .data-table-actions {
+        justify-content: center !important;
+    }
+}
+
+/* A column worth showing only when there is room: hidden in the cramped middle band, where
+   the table is still a grid (>= 920px, see .table-stacked) but narrower than 1200px. A stacked
+   card below 920px shows it again as a labelled field. Put it on the column's <th>
+   (TableColumn cssClass) and on its <td>. */
+@media (min-width: 920px) and (max-width: 1199.98px) {
+    .table-col-wide-only {
+        display: none !important;
     }
 }
 
