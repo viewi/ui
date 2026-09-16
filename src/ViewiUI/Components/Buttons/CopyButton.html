@@ -1,0 +1,6 @@
+<button type="button" class="$buttonClass" (click)="copy" title="{$status ? $status : $title}" aria-label="{$title}">
+    <Icon if="{$status === ''}" name="bi-copy" />
+    <Icon if="{$status === 'Copied'}" name="bi-check2" />
+    <Icon if="{$status === 'Copy failed'}" name="bi-exclamation-circle" />
+    <span if="$label" class="ms-1">{$status ? $status : $label}</span>
+</button>
