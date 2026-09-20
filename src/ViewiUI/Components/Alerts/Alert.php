@@ -13,6 +13,8 @@ class Alert extends BaseComponent
     public bool $show = true;
     public bool $dismissible = true;
     public string $icon = '';
+    /** Non-empty renders an action button beside the message; pressing it emits `action`. */
+    public string $actionLabel = '';
 
     public function variantClass()
     {
@@ -46,6 +48,13 @@ class Alert extends BaseComponent
             setTimeout(() => $this.onClose(), $this.timeout);
             javascript;
         }
+    }
+
+    public function onAction()
+    {
+        // The action closes the message: it has been acted on, and a second press would repeat it.
+        $this->emitEvent('action', true);
+        $this->onClose();
     }
 
     public function onClose()

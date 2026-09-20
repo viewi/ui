@@ -1,4 +1,5 @@
 <div class="alert-container position-fixed bottom-0 end-0 p-3">
     <Alert foreach="$messages->messages as $message" body="{$message->body}" variant="{$message->variant}"
-        timeout="{$message->timeout}" show="{$message->show}" (dismiss)="onDismiss($message)" />
+        timeout="{$message->timeout}" show="{$message->show}" actionLabel="{$message->actionLabel}"
+        (action)="onAction($message)" (dismiss)="onDismiss($message)" />
 </div>

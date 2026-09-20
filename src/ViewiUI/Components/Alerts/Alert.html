@@ -6,6 +6,10 @@
                 $body
             </div>
         </div>
-        <button if="$dismissible" type="button" class="btn-close ms-3" aria-label="Close" (click)="onClose"></button>
+        <div class="d-flex align-items-center">
+            <button if="$actionLabel" type="button" class="btn btn-sm btn-link alert-action fw-semibold text-nowrap ms-3"
+                (click)="onAction">{$actionLabel}</button>
+            <button if="$dismissible" type="button" class="btn-close ms-3" aria-label="Close" (click)="onClose"></button>
+        </div>
     </div>
 </div>

@@ -10,6 +10,16 @@ class AlertContainer extends BaseComponent
     {
     }
 
+    public function onAction(MessageModel $message)
+    {
+        // Held in a local first: $message->action() would look for a METHOD of that name.
+        $action = $message->action;
+        if ($action !== null) {
+            $action();
+        }
+        $this->messages->remove($message);
+    }
+
     public function onDismiss(MessageModel $message)
     {
         $message->show = false;

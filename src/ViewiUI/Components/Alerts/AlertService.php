@@ -42,6 +42,20 @@ class AlertService
         $this->message('info', $message, $timeout);
     }
 
+    /**
+     * A message with something to do about it: `$alerts->action('success', 'Moved 12 links.',
+     * 'Undo', fn() => $this->undo())`. Give it a timeout — an offer that never expires is a
+     * promise the page cannot keep once the person has moved on.
+     */
+    public function action(string $variant, string $body, string $actionLabel, callable $action, ?int $timeout = null)
+    {
+        $message = new MessageModel($body, $variant, $timeout);
+        $message->id = 'alert' . (++$this->idGenerator);
+        $message->actionLabel = $actionLabel;
+        $message->action = $action;
+        $this->messages = [...$this->messages, $message];
+    }
+
     public function remove(MessageModel $message)
     {
         $this->messages = array_filter($this->messages, fn(MessageModel $m) => $m && $m->id !== $message->id);
