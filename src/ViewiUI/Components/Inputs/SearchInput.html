@@ -1,0 +1,13 @@
+<div class="search-input">
+    <label class="visually-hidden" for="{$id ?? $autoId}">$label</label>
+    <div class="search-input-box position-relative">
+        <Icon name="bi-search" classList="search-input-icon" />
+        <input #field type="search" class="form-control search-input-field $inputClass" id="{$id ?? $autoId}" model="$term"
+            placeholder="$placeholder" autocomplete="off" (keydown.escape)="clear" />
+        <button if="{$term !== ''}" type="button" class="btn btn-sm search-input-clear" aria-label="Clear search"
+            title="Clear search" (click)="clear">
+            <Icon name="bi-x-lg" />
+        </button>
+    </div>
+    <div if="$hint" class="form-text">$hint</div>
+</div>
