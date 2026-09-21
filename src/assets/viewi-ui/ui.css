@@ -130,7 +130,7 @@
 }
 
 /* A long unbreakable value (a user's 1,000-character URL) cut to two lines at any
-   width — pair it with title="…" so the full text is a hover away. Put it on an
+   width - pair it with title="…" so the full text is a hover away. Put it on an
    element INSIDE a <td>, never on the td itself: it changes display. */
 .text-clamp-2 {
     display: -webkit-box;
@@ -142,7 +142,7 @@
 
 /* A table column that must keep room for text: with overflow-wrap:anywhere its
    min-content width is one character, so the auto layout would starve it. Only a
-   floor — a long value's max-content already pulls any spare width its way, so a
+   floor - a long value's max-content already pulls any spare width its way, so a
    bigger one just pushes a wide table past its card. A stacked row's main cell
    resets this on phones. */
 .cell-wide {
@@ -154,6 +154,13 @@
 .data-table .table-select {
     width: 1%;
     white-space: nowrap;
+}
+
+/* Bootstrap sizes a checkbox in em, and a table head sets a smaller font: without this the
+   select-all box came out visibly smaller than the row boxes under it. */
+.data-table .table-select .form-check-input {
+    font-size: 1rem;
+    margin-top: 0;
 }
 
 .data-table tr.table-selected > * {
