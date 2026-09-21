@@ -1,18 +1,23 @@
 <div class="tree-view" role="tree" aria-label="$label" #treeRoot (keydown)="onKey($event)">
-    <div foreach="$items as $index => $node" role="none" class="tree-view-row d-flex align-items-center"
-        class.active="{isSelected($node)}" style="{indentOf($node)}">
-        <div if="{$editingKey !== null && $node->key === $editingKey}" class="flex-grow-1">
-            <slot name="edit" data="$node"></slot>
+    <div foreach="$rows as $row" role="none" class="tree-view-row d-flex align-items-center"
+        class.active="{isSelected($row->node)}" style="{indentOf($row->node)}">
+        <!-- The chevron is not a tab stop: the arrows open and close from the row itself. -->
+        <span if="$row->hasChildren" class="tree-view-toggle" class.expanded="{isOpen($row)}" aria-hidden="true"
+            (click)="toggle($row)"><Icon name="bi-chevron-right" /></span>
+        <span else-if="{!$flat}" class="tree-view-toggle-space" aria-hidden="true"></span>
+        <div if="{$editingKey !== null && $row->node->key === $editingKey}" class="flex-grow-1">
+            <slot name="edit" data="$row->node"></slot>
         </div>
         <button else type="button" role="treeitem" class="btn btn-sm flex-grow-1 text-start tree-view-item"
-            class.active="{isSelected($node)}" aria-level="{levelOf($node)}"
-            aria-selected="{isSelected($node) ? 'true' : 'false'}" tabindex="{tabIndexOf($index)}"
-            title="{$node->title}" (click)="select($node, $index)" (focus)="onFocus($index)">
+            class.active="{isSelected($row->node)}" aria-level="{levelOf($row->node)}"
+            aria-expanded="{expandedAttr($row)}" aria-selected="{isSelected($row->node) ? 'true' : 'false'}"
+            tabindex="{tabIndexOf($row)}" title="{$row->node->title}" (click)="select($row)"
+            (focus)="onFocus($row)">
             <span class="d-flex justify-content-between align-items-center">
-                <span class="text-truncate"><Icon if="$node->icon" name="$node->icon" classList="me-2" />{$node->label}</span>
-                <span if="{$node->badge !== ''}" class="badge text-bg-light ms-2">{$node->badge}</span>
+                <span class="text-truncate"><Icon if="$row->node->icon" name="$row->node->icon" classList="me-2" />{$row->node->label}</span>
+                <span if="{$row->node->badge !== ''}" class="badge text-bg-light ms-2">{$row->node->badge}</span>
             </span>
         </button>
-        <div class="tree-view-actions"><slot name="actions" data="$node"></slot></div>
+        <div class="tree-view-actions"><slot name="actions" data="$row->node"></slot></div>
     </div>
 </div>

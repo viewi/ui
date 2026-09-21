@@ -332,3 +332,34 @@
     max-height: 18rem;
     overflow-y: auto;
 }
+
+/* TreeView chevrons: a fixed-width column, so names line up whether a row has children or not. */
+.tree-view-toggle,
+.tree-view-toggle-space {
+    flex: 0 0 1.25rem;
+    width: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tree-view-toggle {
+    cursor: pointer;
+    color: var(--bs-secondary-color);
+    border-radius: var(--bs-border-radius-sm);
+}
+
+.tree-view-toggle:hover {
+    color: var(--bs-body-color);
+    background-color: var(--bs-tertiary-bg);
+}
+
+.tree-view-toggle .viewi-icon {
+    width: .75rem;
+    height: .75rem;
+    transition: transform .15s ease;
+}
+
+.tree-view-toggle.expanded .viewi-icon {
+    transform: rotate(90deg);
+}
