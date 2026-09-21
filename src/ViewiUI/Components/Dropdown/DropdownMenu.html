@@ -1,0 +1,14 @@
+<button #trigger type="button" class="$buttonClass" aria-haspopup="menu" aria-expanded="{$isOpen ? 'true' : 'false'}"
+    aria-label="$label" title="$label" (click.stop)="toggle" (keydown)="onTriggerKey($event)">
+    <Icon name="$icon" />
+</button>
+<Overlay if="$isOpen" base="$trigger" absolute autoWidth align="$align" (clickOutside)="onOutside">
+    <div #menu class="dropdown-menu show position-relative shadow-sm" role="menu" aria-label="$label"
+        (keydown)="onMenuKey($event)">
+        <button foreach="$items as $item" type="button" role="menuitem" tabindex="-1"
+            class="dropdown-item d-flex align-items-center" class.text-danger="$item->danger"
+            disabled="$item->disabled" (click.stop)="choose($item)">
+            <Icon if="$item->icon" name="$item->icon" classList="me-2" /><span>{$item->label}</span>
+        </button>
+    </div>
+</Overlay>
