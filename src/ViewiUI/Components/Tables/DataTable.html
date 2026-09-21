@@ -20,13 +20,19 @@
     </div>
 
 
-    <!-- Bulk bar while rows are selected: the count, the page's own actions (the 'selection' slot)
-         and a way out. A region with a label, so a screen reader announces what it is for. -->
-    <div if="{$selectable && $selectedCount > 0}" class="data-table-selection d-flex flex-wrap align-items-center gap-2"
-        role="region" aria-label="Selected rows">
-        <span class="fw-semibold">{$selectedCount} selected</span>
-        <slot name="selection"></slot>
-        <button type="button" class="btn btn-sm btn-link" (click)="clearSelection">Clear selection</button>
+    <!-- Bulk bar: the count, the page's own actions (the 'selection' slot) and a way out. It keeps
+         its space while nothing is selected, showing the hint instead, so ticking the first row
+         never pushes the table down. A labelled region, so a screen reader says what it is for. -->
+    <div if="$selectable" class="data-table-selection d-flex flex-wrap align-items-center gap-2"
+        class.data-table-selection-idle="{$selectedCount === 0}" role="region" aria-label="Selected rows">
+        <!-- A real element, not <template>: a <template> around the slot rendered the Clear button
+             empty, with its label outside it as loose text. -->
+        <div if="{$selectedCount > 0}" class="d-flex flex-wrap align-items-center gap-2">
+            <span class="fw-semibold">{$selectedCount} selected</span>
+            <slot name="selection"></slot>
+            <button type="button" class="btn btn-sm btn-link" (click)="clearSelection">Clear selection</button>
+        </div>
+        <span else class="small text-muted">{$selectionHint}</span>
     </div>
 
     <!-- Scrolls sideways instead of pushing the page wider than the phone. -->

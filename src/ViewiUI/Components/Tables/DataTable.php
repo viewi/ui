@@ -56,6 +56,8 @@ class DataTable extends BaseComponent
      * filter — so an action can never apply to rows the person can no longer see.
      */
     public bool $selectable = false;
+    /** What the selection bar says while nothing is selected; its space is kept either way. */
+    public string $selectionHint = 'Select rows to act on several at once.';
     /** The property that identifies a row for selection. */
     public string $selectKey = 'Id';
     /**

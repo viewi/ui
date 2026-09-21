@@ -172,6 +172,14 @@
     margin-bottom: .75rem;
     border-radius: .5rem;
     background-color: rgba(var(--bs-primary-rgb), .08);
+    /* The same height with or without buttons in it: an sm button's height plus the padding. */
+    min-height: calc(1.5em + .5rem + 2px + 1rem);
+}
+
+/* Nothing selected: the space stays, the tint goes, so the hint reads as quiet help. */
+.data-table-selection.data-table-selection-idle {
+    background-color: transparent;
+    border: 1px dashed var(--bs-border-color);
 }
 
 /* On a phone the stacked card puts the checkbox first, beside the row's main cell. */
