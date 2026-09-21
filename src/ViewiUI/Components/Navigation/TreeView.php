@@ -4,6 +4,7 @@ namespace Viewi\UI\Components\Navigation;
 
 use Viewi\Components\BaseComponent;
 use Viewi\Components\DOM\DomEvent;
+use Viewi\Components\DOM\DomHelper;
 use Viewi\Components\DOM\HtmlNode;
 
 /**
@@ -76,11 +77,9 @@ class TreeView extends BaseComponent
     {
         // Only keys pressed ON a row: the arrows inside a row's ⋯ menu or its rename box belong to
         // them, and bubble up here too.
-        <<<'javascript'
-        if (!event.target || !event.target.getAttribute || event.target.getAttribute('role') !== 'treeitem') {
+        if ($event->target->getAttribute('role') !== 'treeitem') {
             return;
         }
-        javascript;
         $key = $event->key;
         $size = count($this->items);
         if ($size === 0) {
@@ -154,14 +153,12 @@ class TreeView extends BaseComponent
     private function focusRow(int $index)
     {
         $this->focusIndex = $index;
-        <<<'javascript'
-        const root = $this.treeRoot;
-        if (root) {
-            const rows = root.querySelectorAll('[role="treeitem"]');
-            if (rows[index]) {
-                rows[index].focus();
-            }
+        if ($this->treeRoot === null) {
+            return;
         }
-        javascript;
+        $rows = DomHelper::getDomList($this->treeRoot->querySelectorAll('[role="treeitem"]'));
+        if ($index < count($rows)) {
+            $rows[$index]->focus();
+        }
     }
 }

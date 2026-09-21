@@ -4,6 +4,7 @@ namespace Viewi\UI\Components\Tables;
 
 use Viewi\Components\BaseComponent;
 use Viewi\Components\DOM\DomEvent;
+use Viewi\Components\DOM\DomHelper;
 use Viewi\Components\DOM\HtmlNode;
 use Viewi\DI\Inject;
 use Viewi\DI\Scope;
@@ -154,21 +155,21 @@ class DataTable extends BaseComponent
         // has clicked a checkbox it stops following the attribute, so "select none" after ticking
         // two rows by hand left those two ticked. The header's half-checked state has no attribute
         // at all.
-        <<<'javascript'
-        const root = $this.tableRoot;
-        if (root) {
-            const head = root.querySelector('thead th.table-select input');
-            if (head) {
-                head.checked = $this.allSelected;
-                head.indeterminate = $this.someSelected;
+        // $tableRoot is null on the server, so this only ever runs in the browser.
+        if ($this->tableRoot !== null) {
+            $head = $this->tableRoot->querySelector('thead th.table-select input');
+            if ($head !== null) {
+                $head->checked = $this->allSelected;
+                $head->indeterminate = $this->someSelected;
             }
-            const boxes = root.querySelectorAll('tbody td.table-select input');
-            for (let i = 0; i < boxes.length; i++) {
-                const row = $this.items[i];
-                boxes[i].checked = !!row && $this.selectedKeys.indexOf(row[$this.selectKey]) !== -1;
+            $boxes = DomHelper::getDomList($this->tableRoot->querySelectorAll('tbody td.table-select input'));
+            $size = count($boxes);
+            $rows = count($this->items);
+            for ($i = 0; $i < $size; $i++) {
+                $boxes[$i]->checked = $i < $rows
+                    && in_array($this->items[$i]->{$this->selectKey}, $this->selectedKeys, true);
             }
         }
-        javascript;
         $this->emitEvent('selectionChange', $keys);
     }
 

@@ -4,7 +4,9 @@ namespace Viewi\UI\Components\Dropdown;
 
 use Viewi\Components\BaseComponent;
 use Viewi\Components\DOM\DomEvent;
+use Viewi\Components\DOM\DomHelper;
 use Viewi\Components\DOM\HtmlNode;
+use Viewi\Components\Environment\ClientTimer;
 
 /**
  * An actions menu behind one small trigger — the ⋯ on a row:
@@ -56,9 +58,7 @@ class DropdownMenu extends BaseComponent
     {
         $this->isOpen = true;
         $this->activeIndex = $index === -1 ? $this->lastEnabled() : $this->nextEnabled(-1, 1);
-        <<<'javascript'
-        setTimeout(() => $this.focusActive(), 0);
-        javascript;
+        ClientTimer::setTimeoutStatic(fn() => $this->focusActive(), 0);
     }
 
     /** Close; with $returnFocus the trigger gets focus back, as keyboard users expect after Escape. */
@@ -128,29 +128,25 @@ class DropdownMenu extends BaseComponent
         }
     }
 
-    /** Move DOM focus to the active item — browser work on a NodeList, so it is written as JS. */
-    public function focusActive()
+    /**
+     * Move DOM focus to the active item. The Overlay renders hidden until rendered() has measured
+     * its position (one timer tick, then one more for the re-render), and a hidden element cannot
+     * take focus — so try, and if focus did not land, try again on the next frames, up to 10 times.
+     */
+    public function focusActive(int $tries = 10)
     {
-        <<<'javascript'
-        // The Overlay renders hidden until it has measured its position, and a hidden element
-        // cannot take focus — so try, and if focus did not land, try again on the next frames.
-        const attempt = (tries) => {
-            const menu = $this.menu;
-            if (!menu || $this.activeIndex < 0) {
-                return;
-            }
-            const buttons = menu.querySelectorAll('[role="menuitem"]');
-            const target = buttons[$this.activeIndex];
-            if (!target) {
-                return;
-            }
-            target.focus();
-            if (document.activeElement !== target && tries > 0) {
-                requestAnimationFrame(() => attempt(tries - 1));
-            }
-        };
-        attempt(10);
-        javascript;
+        if ($this->menu === null || $this->activeIndex < 0) {
+            return;
+        }
+        $buttons = DomHelper::getDomList($this->menu->querySelectorAll('[role="menuitem"]'));
+        if ($this->activeIndex >= count($buttons)) {
+            return;
+        }
+        $target = $buttons[$this->activeIndex];
+        $target->focus();
+        if (DomHelper::getActiveElement() !== $target && $tries > 0) {
+            DomHelper::requestAnimationFrame(fn() => $this->focusActive($tries - 1));
+        }
     }
 
     /** The next enabled item after $from in $step's direction, wrapping around; -1 if none. */

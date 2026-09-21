@@ -4,7 +4,9 @@ namespace Viewi\UI\Components\Dropdown;
 
 use Viewi\Components\BaseComponent;
 use Viewi\Components\DOM\DomEvent;
+use Viewi\Components\DOM\DomHelper;
 use Viewi\Components\DOM\HtmlNode;
+use Viewi\Components\Environment\ClientTimer;
 use Viewi\DI\Inject;
 use Viewi\DI\Scope;
 use Viewi\UI\Components\Forms\FormContext;
@@ -199,14 +201,15 @@ class SelectInput extends BaseComponent
         $this->cursor = $position;
         $this->activeDescendant = $this->listId . '-' . ($position === -1 ? 'none' : $position);
         // Keep the highlighted option visible in a long list; it may not have rendered yet on open.
-        <<<'javascript'
-        setTimeout(() => {
-            const option = document.getElementById($this.activeDescendant);
-            if (option && option.scrollIntoView) {
-                option.scrollIntoView({ block: 'nearest' });
-            }
-        }, 0);
-        javascript;
+        ClientTimer::setTimeoutStatic(fn() => $this->scrollCursorIntoView(), 0);
+    }
+
+    public function scrollCursorIntoView()
+    {
+        $option = DomHelper::getElementById($this->activeDescendant);
+        if ($option !== null) {
+            $option->scrollIntoView(['block' => 'nearest']);
+        }
     }
 
     /** Where the current value sits in the list; the placeholder or the first option otherwise. */
