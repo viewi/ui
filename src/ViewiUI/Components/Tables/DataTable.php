@@ -4,6 +4,7 @@ namespace Viewi\UI\Components\Tables;
 
 use Viewi\Components\BaseComponent;
 use Viewi\Components\DOM\DomEvent;
+use Viewi\Components\DOM\HtmlNode;
 use Viewi\DI\Inject;
 use Viewi\DI\Scope;
 
@@ -30,6 +31,11 @@ class DataTable extends BaseComponent
      */
     public bool $stacked = false;
     public ?TableFilter $filter = null;
+    /**
+     * The table's root element, from which the checkboxes are reached. Typed ?HtmlNode on purpose:
+     * an untyped property is not wired to its `#ref`, and stays null.
+     */
+    public ?HtmlNode $tableRoot = null;
     public ?int $total = null;
     public ?int $pageSize = null;
     public $editItem = null;
@@ -40,6 +46,25 @@ class DataTable extends BaseComponent
     public string $emptyText = '';
     /** Bound to the search box so "Clear search" can visibly reset it. */
     public string $searchValue = '';
+    /**
+     * Row selection for bulk actions: a checkbox per row, select-all in the header, and a bar over
+     * the table (the `selection` slot) while anything is selected. Emits `selectionChange` with the
+     * selected rows' keys.
+     *
+     * The selection is cleared whenever the rows change — another page, a new search, a different
+     * filter — so an action can never apply to rows the person can no longer see.
+     */
+    public bool $selectable = false;
+    /** The property that identifies a row for selection. */
+    public string $selectKey = 'Id';
+    /**
+     * Keys of the selected rows. Always replaced, never mutated in place: an array written into is
+     * not reactive, so the checkboxes would not follow.
+     */
+    public array $selectedKeys = [];
+    public bool $allSelected = false;
+    public bool $someSelected = false;
+    public int $selectedCount = 0;
 
     /**
      * "No rows" has two very different causes and must not share one message: the
@@ -75,8 +100,76 @@ class DataTable extends BaseComponent
                         $this->{$name} = $props[$name];
                     }
                 }
+                if (isset($props['items'])) {
+                    // New rows (another page, a new search): drop the selection with them.
+                    $this->clearSelection();
+                }
             });
         }
+    }
+
+    public function isSelected($item): bool
+    {
+        return in_array($item->{$this->selectKey}, $this->selectedKeys, true);
+    }
+
+    public function toggleRow($item)
+    {
+        $key = $item->{$this->selectKey};
+        if (in_array($key, $this->selectedKeys, true)) {
+            $this->setSelection(array_values(array_filter($this->selectedKeys, fn($k) => $k !== $key)));
+            return;
+        }
+        $this->setSelection([...$this->selectedKeys, $key]);
+    }
+
+    /** The header checkbox: select every row on the page, or — when all already are — none. */
+    public function toggleAll()
+    {
+        if ($this->allSelected) {
+            $this->setSelection([]);
+            return;
+        }
+        $keys = [];
+        foreach ($this->items as $item) {
+            $keys[] = $item->{$this->selectKey};
+        }
+        $this->setSelection($keys);
+    }
+
+    public function clearSelection()
+    {
+        if (count($this->selectedKeys) > 0) {
+            $this->setSelection([]);
+        }
+    }
+
+    private function setSelection(array $keys)
+    {
+        $this->selectedKeys = $keys;
+        $this->selectedCount = count($keys);
+        $this->allSelected = count($this->items) > 0 && $this->selectedCount === count($this->items);
+        $this->someSelected = $this->selectedCount > 0 && !$this->allSelected;
+        // Set the checkboxes' DOM PROPERTIES, not only the bound `checked` attribute: once a person
+        // has clicked a checkbox it stops following the attribute, so "select none" after ticking
+        // two rows by hand left those two ticked. The header's half-checked state has no attribute
+        // at all.
+        <<<'javascript'
+        const root = $this.tableRoot;
+        if (root) {
+            const head = root.querySelector('thead th.table-select input');
+            if (head) {
+                head.checked = $this.allSelected;
+                head.indeterminate = $this.someSelected;
+            }
+            const boxes = root.querySelectorAll('tbody td.table-select input');
+            for (let i = 0; i < boxes.length; i++) {
+                const row = $this.items[i];
+                boxes[i].checked = !!row && $this.selectedKeys.indexOf(row[$this.selectKey]) !== -1;
+            }
+        }
+        javascript;
+        $this->emitEvent('selectionChange', $keys);
     }
 
     public function mounted()

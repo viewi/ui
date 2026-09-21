@@ -1,7 +1,8 @@
-<div class="data-table">
+<div #tableRoot class="data-table">
     <div if="{$search || $add || $addLink || isset($_slots['actions'])}" class="row data-table-toolbar">
         <div if="$search" class="col col-md-6 col-lg-4 col-12 pb-4">
-            <TextInput placeholder="Search" aria-label="Search" model="$searchValue" (input)="onSearch" />
+            <!-- Debounced: a server-backed list re-fetched once typing pauses, not per keystroke. -->
+            <SearchInput model="$searchValue" (search)="onSearch" debounce="{300}" label="Search" placeholder="Search" />
         </div>
         <!-- Flex with a gap, so buttons that run out of room wrap onto a second line with space
              between them instead of touching. Slot buttons need no margins of their own. -->
@@ -19,11 +20,24 @@
     </div>
 
 
+    <!-- Bulk bar while rows are selected: the count, the page's own actions (the 'selection' slot)
+         and a way out. A region with a label, so a screen reader announces what it is for. -->
+    <div if="{$selectable && $selectedCount > 0}" class="data-table-selection d-flex flex-wrap align-items-center gap-2"
+        role="region" aria-label="Selected rows">
+        <span class="fw-semibold">{$selectedCount} selected</span>
+        <slot name="selection"></slot>
+        <button type="button" class="btn btn-sm btn-link" (click)="clearSelection">Clear selection</button>
+    </div>
+
     <!-- Scrolls sideways instead of pushing the page wider than the phone. -->
     <div if="{count($items) > 0}" class="table-responsive">
         <table class="table align-middle mt-4" class.table-stacked="$stacked">
             <thead>
                 <tr>
+                    <th if="$selectable" scope="col" class="table-select">
+                        <input type="checkbox" class="form-check-input" checked="{$allSelected}"
+                            (change)="toggleAll" aria-label="Select every row on this page" />
+                    </th>
                     <th foreach="$columns as $column" scope="col" class="{$column->cssClass ?? ''}">{$column->title ?? $column->key}</th>
                     <th if="{$remove || $edit}" scope="col" class="text-center">
                         Actions
@@ -31,7 +45,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr foreach="$items as $item">
+                <tr foreach="$items as $item" class.table-selected="{$selectable && in_array($item->{$selectKey}, $selectedKeys, true)}">
+                    <td if="$selectable" class="table-select" data-label="Select">
+                        <input type="checkbox" class="form-check-input"
+                            checked="{in_array($item->{$selectKey}, $selectedKeys, true)}" (change)="toggleRow($item)"
+                            aria-label="Select this row" />
+                    </td>
                     <template foreach="$columns as $column">
                         <template if="{$changeMode && isset($_slots['edit_' . $column->key]) && $item === $editItem}">
                             <slot name="{'edit_' . $column->key}" data="$item"></slot>
