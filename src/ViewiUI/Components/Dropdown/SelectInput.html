@@ -1,19 +1,25 @@
 <div class="row mb-3">
-    <label if="$label" for="$id" class="col-form-label">$label</label>
+    <label if="$label" for="$id" class="col-form-label" id="{$listId}-label">$label</label>
     <div class="$wrapperClass">
-        <div #input class="form-select $inputClass" role="button" aria-label="$label" id="$id" (click)="toggleExpand">
+        <div #input class="form-select $inputClass" role="combobox" tabindex="0" id="$id"
+            aria-haspopup="listbox" aria-expanded="{$isExpanded ? 'true' : 'false'}" aria-controls="$listId"
+            aria-labelledby="{$listId}-label" aria-activedescendant="$activeDescendant"
+            (click)="toggleExpand" (keydown)="onKey($event)">
             <span class="menu-item-title">{getTitle()}</span>
         </div>
-        <Overlay if="$isExpanded" base="$input" absolute (clickOutside)="$isExpanded = false">
-            <div class="collapse rounded border card show position-relative shadow-sm">
-                <div class="nav-item">
-                    <span if="$nullable" role="button" class="py-2 nav-link d-flex align-items-center px-3"
-                        class.menu-link-active="{$currentValue === null}" (click)="selectItem(null)">
+        <Overlay if="$isExpanded" base="$input" absolute (clickOutside)="close">
+            <div class="collapse rounded border card show position-relative shadow-sm select-input-list">
+                <div class="nav-item" role="listbox" id="$listId" aria-labelledby="{$listId}-label">
+                    <span if="$nullable" role="option" id="{$listId}-none" aria-selected="{$currentValue === null ? 'true' : 'false'}"
+                        class="py-2 nav-link d-flex align-items-center px-3" class.menu-link-active="{$currentValue === null}"
+                        class.select-option-cursor="{$cursor === -1}" (click)="choosePlaceholder">
                         <span class="menu-item-title">$placeholder</span>
                     </span>
-                    <span foreach="$items as $key => $item" role="button" class="py-2 nav-link d-flex align-items-center px-3"
-                        class.menu-link-active="{$currentValue === ($associative ? $key : $item)}" (click)="selectItem($associative ? $key : $item, $item)">
-                        <span class="menu-item-title">{$itemTitle ? $item->{$itemTitle} : $item}</span>
+                    <span foreach="$options as $option" role="option" id="{$listId}-{$option->position}"
+                        aria-selected="{isCurrent($option) ? 'true' : 'false'}"
+                        class="py-2 nav-link d-flex align-items-center px-3" class.menu-link-active="{isCurrent($option)}"
+                        class.select-option-cursor="{$cursor === $option->position}" (click)="choose($option)">
+                        <span class="menu-item-title">{$option->title}</span>
                     </span>
                 </div>
             </div>
