@@ -1,0 +1,12 @@
+<nav class="breadcrumb-nav" aria-label="$label">
+    <ol class="breadcrumb mb-0">
+        <li foreach="$items as $index => $item" class="breadcrumb-item" class.active="{$index === count($items) - 1}"
+            class.breadcrumb-middle="{$index > 0 && $index < count($items) - 2}"
+            aria-current="{$index === count($items) - 1 ? 'page' : 'false'}">
+            <Icon if="$item->icon" name="$item->icon" classList="me-1" />
+            <button if="{$index < count($items) - 1 && $item->key !== null}" type="button"
+                class="btn btn-link p-0 align-baseline breadcrumb-link" (click)="select($item)">{$item->label}</button>
+            <span else>{$item->label}</span>
+        </li>
+    </ol>
+</nav>
