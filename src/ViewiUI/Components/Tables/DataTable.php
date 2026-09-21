@@ -67,7 +67,9 @@ class DataTable extends BaseComponent
         if ($this->tableContext !== null) {
             $this->tableContext->onUpdate(function (array $props) {
                 // TODO: make Viewi feature, pass props though context
-                $names = ['id', 'classList', 'items', 'columns', 'search', 'paging', 'add', 'remove', 'edit', 'filter', 'addText', 'editInline', 'editItem', 'changeMode'];
+                // searchValue: a list restoring its search from the URL has to show it in the box, or
+                // the rows are filtered by a term the person cannot see.
+                $names = ['id', 'classList', 'items', 'columns', 'search', 'searchValue', 'paging', 'add', 'remove', 'edit', 'filter', 'addText', 'editInline', 'editItem', 'changeMode'];
                 foreach ($names as $name) {
                     if (isset($props[$name])) {
                         $this->{$name} = $props[$name];
