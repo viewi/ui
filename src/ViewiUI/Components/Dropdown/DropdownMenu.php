@@ -35,6 +35,8 @@ class DropdownMenu extends BaseComponent
     /** Accessible name for the trigger and the menu — say what the actions are for. */
     public string $label = 'Actions';
     public string $icon = 'bi-three-dots';
+    /** Visible text beside the icon ("Move to…"); empty = icon only, like a row's ⋯. */
+    public string $text = '';
     public string $buttonClass = 'btn btn-sm btn-link dropdown-menu-trigger';
     /** 'end' opens leftward from the trigger's right edge — the usual place for a row's ⋯. */
     public string $align = 'end';

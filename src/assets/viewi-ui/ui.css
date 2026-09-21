@@ -311,3 +311,9 @@
     height: 1em;
     vertical-align: -.125em;
 }
+
+/* A DropdownMenu listing many choices (every folder, say) scrolls instead of running off screen. */
+.dropdown-menu[role="menu"] {
+    max-height: 18rem;
+    overflow-y: auto;
+}
