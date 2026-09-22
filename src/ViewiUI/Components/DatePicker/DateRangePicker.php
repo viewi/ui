@@ -12,7 +12,7 @@ use Viewi\Components\DOM\HtmlNode;
  * (e.g. preset buttons clearing the custom range).
  *
  * All date math is UTC (gmmktime/gmdate) to match the server, which interprets the
- * query dates as UTC — keeps the grid and the fetched window from drifting by a day.
+ * query dates as UTC - keeps the grid and the fetched window from drifting by a day.
  */
 class DateRangePicker extends BaseComponent
 {
@@ -28,7 +28,15 @@ class DateRangePicker extends BaseComponent
     public int $viewMonth = 1;
     public string $selStart = '';   // in-progress selection start ('YYYY-MM-DD')
     public string $selEnd = '';     // in-progress selection end
-    public array $days = [];        // 42 CalendarDay cells (6 weeks) — a property so foreach re-renders
+    /**
+     * The 42 CalendarDay cells (6 weeks), a property so foreach re-renders. Built only when the
+     * visible MONTH changes: Viewi's foreach keeps an element only for the same object, so rebuilding
+     * on every click re-created all 42 buttons and the one just clicked lost focus. The selection
+     * is read through isStart()/isEnd()/inRange() instead of being stored on the cells.
+     */
+    public array $days = [];
+    /** "YYYY-M" of the month $days was built for. */
+    private string $builtFor = '';
     public string $monthLabel = ''; // "June 2026"
     public string $selectionLabel = '';
     public string $triggerLabel = 'Custom range'; // sane SSR default; refined from props in mounted()
@@ -69,9 +77,15 @@ class DateRangePicker extends BaseComponent
         $this->refreshLabel();
     }
 
-    /** Recompute the 42-cell grid + month/selection labels for the current view + selection. */
+    /** The 42-cell grid for the visible month (kept when the month is the same) + the labels. */
     public function rebuild()
     {
+        $this->refreshSelectionLabel();
+        $month = $this->viewYear . '-' . $this->viewMonth;
+        if ($month === $this->builtFor && count($this->days) === 42) {
+            return;
+        }
+        $this->builtFor = $month;
         $firstTs = gmmktime(0, 0, 0, $this->viewMonth, 1, $this->viewYear);
         $this->monthLabel = gmdate('F Y', $firstTs);
         $dow = intval(gmdate('N', $firstTs)); // 1 = Monday .. 7 = Sunday
@@ -86,16 +100,28 @@ class DateRangePicker extends BaseComponent
                 $date,
                 intval(gmdate('j', $ts)),
                 intval(gmdate('n', $ts)) === $this->viewMonth,
-                $date === $this->selStart,
-                $date === $this->selEnd,
-                $this->selStart !== '' && $this->selEnd !== '' && $date > $this->selStart && $date < $this->selEnd,
                 $date === $todayStr,
                 $date > $todayStr
             );
             $i = $i + 1;
         }
         $this->days = $cells;
-        $this->refreshSelectionLabel();
+    }
+
+    public function isStart(CalendarDay $cell): bool
+    {
+        return $cell->date === $this->selStart;
+    }
+
+    public function isEnd(CalendarDay $cell): bool
+    {
+        return $cell->date === $this->selEnd;
+    }
+
+    /** Strictly between start and end. */
+    public function inRange(CalendarDay $cell): bool
+    {
+        return $this->selStart !== '' && $this->selEnd !== '' && $cell->date > $this->selStart && $cell->date < $this->selEnd;
     }
 
     private function refreshSelectionLabel()

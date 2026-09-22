@@ -363,3 +363,33 @@
 .tree-view-toggle.expanded .viewi-icon {
     transform: rotate(90deg);
 }
+
+/* A TreeView row that cannot be chosen: readable, visibly not an option. Still focusable, so the
+   arrows walk past it and a screen reader says why (aria-disabled). */
+.tree-view-item.tree-view-disabled {
+    opacity: .5;
+    cursor: default;
+}
+
+/* TreePicker: a popup wide enough for paths, its tree scrolling under a fixed search box. */
+.tree-picker-panel {
+    width: 20rem;
+    max-width: calc(100vw - 2rem);
+}
+
+.tree-picker-list {
+    max-height: 16rem;
+    overflow-y: auto;
+}
+
+.tree-picker .tree-picker-caret {
+    width: .75em;
+    height: .75em;
+    opacity: .7;
+}
+
+.tree-picker > button .viewi-icon {
+    width: 1em;
+    height: 1em;
+    vertical-align: -.125em;
+}
