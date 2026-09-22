@@ -37,6 +37,9 @@ class DataTable extends BaseComponent
      * an untyped property is not wired to its `#ref`, and stays null.
      */
     public ?HtmlNode $tableRoot = null;
+    /** The sticky block above the rows; its height is what the column headers dock under. */
+    public ?HtmlNode $tableHead = null;
+    private bool $headWatched = false;
     public ?int $total = null;
     public ?int $pageSize = null;
     public $editItem = null;
@@ -68,6 +71,12 @@ class DataTable extends BaseComponent
      * number, so the list can re-fetch (and remember it in the address).
      */
     public array $pageSizes = [10, 25, 50, 100];
+    /**
+     * Keep the column headers (and the selection bar, when rows can be selected) in view while the
+     * table is scrolled - worth it once a page holds 50 or 100 rows. Opt-in: a table inside a
+     * scrolling panel or a modal has nothing to stick to.
+     */
+    public bool $sticky = false;
     /** The property that identifies a row for selection. */
     public string $selectKey = 'Id';
     /**
@@ -199,6 +208,37 @@ class DataTable extends BaseComponent
             $event->dataTransfer->effectAllowed = 'move';
         }
         $this->emitEvent('rowDragStart', $item);
+    }
+
+    /**
+     * Refs are assigned while the template renders, which is AFTER mounted(), so the measurement
+     * starts here - once, on the first render.
+     */
+    public function rendered()
+    {
+        if (!$this->headWatched) {
+            $this->headWatched = true;
+            $this->watchHeadHeight();
+        }
+    }
+
+    /**
+     * Keep --data-table-head-h equal to the sticky block's height, so the column headers dock right
+     * under it however it grows (the selection bar filling, a breadcrumb wrapping, a narrower
+     * window). A ResizeObserver, because no PHP-side hook sees a layout change; it costs nothing
+     * while nothing moves, and the server never runs it.
+     */
+    private function watchHeadHeight()
+    {
+        <<<'javascript'
+        const head = $this.tableHead, root = $this.tableRoot;
+        if (!head || !root || typeof ResizeObserver === 'undefined') {
+            return;
+        }
+        const apply = () => root.style.setProperty('--data-table-head-h', head.offsetHeight + 'px');
+        apply();
+        new ResizeObserver(apply).observe(head);
+        javascript;
     }
 
     public function onPageSize(DomEvent $event)

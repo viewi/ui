@@ -457,3 +457,32 @@
     background-color: rgba(var(--bs-primary-rgb), .1);
     box-shadow: inset 0 0 0 2px rgba(var(--bs-primary-rgb), .75);
 }
+
+/* `sticky`: everything above the rows (the page's head slot, the toolbar, the selection bar) is one
+   sticky block with a solid background, and the column headers dock under it - worth it once a page
+   holds 50 or 100 rows. Only from 920px: the stacked card layout has no header row, and below that
+   the table may scroll sideways, and a horizontally scrollable box is its own sticky container
+   (which is why .table-responsive's overflow is neutralised here). `--data-table-sticky-top` lets a
+   page park the block under its own fixed header; `--data-table-head-h` is measured by the
+   component, since the block grows when the selection bar fills or a breadcrumb wraps. */
+@media (min-width: 920px) {
+    .data-table-sticky .table-responsive {
+        overflow: visible;
+    }
+
+    .data-table-sticky .data-table-head {
+        position: sticky;
+        top: var(--data-table-sticky-top, 0px);
+        z-index: 3;
+        background-color: var(--bs-body-bg);
+    }
+
+    .data-table-sticky thead th {
+        position: sticky;
+        top: calc(var(--data-table-sticky-top, 0px) + var(--data-table-head-h, 0px));
+        z-index: 2;
+        background-color: var(--bs-body-bg);
+        /* A border on a sticky cell scrolls away with the row; an inset shadow does not. */
+        box-shadow: inset 0 -1px 0 var(--bs-border-color);
+    }
+}

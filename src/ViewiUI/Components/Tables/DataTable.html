@@ -1,43 +1,48 @@
-<div #tableRoot class="data-table">
-    <div if="{$search || $add || $addLink || isset($_slots['actions'])}" class="row data-table-toolbar">
-        <div if="$search" class="col col-md-6 col-lg-4 col-12 pb-4">
-            <!-- Debounced: a server-backed list re-fetched once typing pauses, not per keystroke. -->
-            <SearchInput model="$searchValue" (search)="onSearch" debounce="{300}" label="Search" placeholder="Search" />
+<div #tableRoot class="data-table" class.data-table-sticky="$sticky" class.data-table-has-bar="$selectable">
+    <!-- Everything above the rows travels together when `sticky`: the page's own head (breadcrumb,
+         a quick-add bar), the toolbar and the selection bar. The column headers dock under it. -->
+    <div #tableHead class="data-table-head">
+        <slot name="head"></slot>
+        <div if="{$search || $add || $addLink || isset($_slots['actions'])}" class="row data-table-toolbar">
+            <div if="$search" class="col col-md-6 col-lg-4 col-12 pb-4">
+                <!-- Debounced: a server-backed list re-fetched once typing pauses, not per keystroke. -->
+                <SearchInput model="$searchValue" (search)="onSearch" debounce="{300}" label="Search" placeholder="Search" />
+            </div>
+            <!-- Flex with a gap, so buttons that run out of room wrap onto a second line with space
+                 between them instead of touching. Slot buttons need no margins of their own. -->
+            <div if="{$add || $addLink || isset($_slots['actions'])}"
+                class="col col-md-6 col-lg-8 col-12 pb-4 d-flex flex-wrap justify-content-end align-items-start gap-2 data-table-actions">
+                <!-- 'actions' slot: extra toolbar buttons rendered inline before the Add button. -->
+                <slot name="actions"></slot>
+                <button if="{$add || $addLink}" type="button" class="btn btn-primary" (click)="onCreate">
+                    <div class="d-flex align-items-center">
+                        <Icon name="bi-plus-square" classList="bi me-2" width="1.5em" height="1.5em" />
+                        $addText
+                    </div>
+                </button>
+            </div>
         </div>
-        <!-- Flex with a gap, so buttons that run out of room wrap onto a second line with space
-             between them instead of touching. Slot buttons need no margins of their own. -->
-        <div if="{$add || $addLink || isset($_slots['actions'])}"
-            class="col col-md-6 col-lg-8 col-12 pb-4 d-flex flex-wrap justify-content-end align-items-start gap-2 data-table-actions">
-            <!-- 'actions' slot: extra toolbar buttons rendered inline before the Add button. -->
-            <slot name="actions"></slot>
-            <button if="{$add || $addLink}" type="button" class="btn btn-primary" (click)="onCreate">
-                <div class="d-flex align-items-center">
-                    <Icon name="bi-plus-square" classList="bi me-2" width="1.5em" height="1.5em" />
-                    $addText
-                </div>
-            </button>
-        </div>
-    </div>
 
 
-    <!-- Bulk bar: the count, the page's own actions (the 'selection' slot) and a way out. It keeps
-         its space while nothing is selected, showing the hint instead, so ticking the first row
-         never pushes the table down. A labelled region, so a screen reader says what it is for. -->
-    <div if="$selectable" class="data-table-selection d-flex flex-wrap align-items-center gap-2"
-        class.data-table-selection-idle="{$selectedCount === 0}" class.data-table-selection-stacked="$stacked"
-        role="region" aria-label="Selected rows">
-        <!-- Select-all for stacked cards, which hide the table header (shown below 920px only). -->
-        <input type="checkbox" class="form-check-input m-0 data-table-select-all" checked="{$allSelected}"
-            (change)="toggleAll" aria-label="Select every row on this page" />
-        <!-- A real element, not <template>: a <template> around the slot rendered the Clear button
-             empty, with its label outside it as loose text. -->
-        <div if="{$selectedCount > 0}" class="d-flex flex-wrap align-items-center gap-2">
-            <span class="fw-semibold">{$selectedCount} selected</span>
-            <slot name="selection"></slot>
-            <button type="button" class="btn btn-sm btn-link" (click)="clearSelection">Clear selection</button>
+        <!-- Bulk bar: the count, the page's own actions (the 'selection' slot) and a way out. It keeps
+             its space while nothing is selected, showing the hint instead, so ticking the first row
+             never pushes the table down. A labelled region, so a screen reader says what it is for. -->
+        <div if="$selectable" class="data-table-selection d-flex flex-wrap align-items-center gap-2"
+            class.data-table-selection-idle="{$selectedCount === 0}" class.data-table-selection-stacked="$stacked"
+            role="region" aria-label="Selected rows">
+            <!-- Select-all for stacked cards, which hide the table header (shown below 920px only). -->
+            <input type="checkbox" class="form-check-input m-0 data-table-select-all" checked="{$allSelected}"
+                (change)="toggleAll" aria-label="Select every row on this page" />
+            <!-- A real element, not <template>: a <template> around the slot rendered the Clear button
+                 empty, with its label outside it as loose text. -->
+            <div if="{$selectedCount > 0}" class="d-flex flex-wrap align-items-center gap-2">
+                <span class="fw-semibold">{$selectedCount} selected</span>
+                <slot name="selection"></slot>
+                <button type="button" class="btn btn-sm btn-link" (click)="clearSelection">Clear selection</button>
+            </div>
+            <span else class="small text-muted">{$selectionHint}</span>
+            </div>
         </div>
-        <span else class="small text-muted">{$selectionHint}</span>
-    </div>
 
     <!-- Scrolls sideways instead of pushing the page wider than the phone. -->
     <div if="{count($items) > 0}" class="table-responsive">
