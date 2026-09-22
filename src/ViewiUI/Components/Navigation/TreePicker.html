@@ -1,0 +1,18 @@
+<div class="tree-picker d-inline-block">
+    <button #trigger type="button" class="$buttonClass" aria-haspopup="tree" aria-expanded="{$isOpen ? 'true' : 'false'}"
+        title="$label" (click.stop)="toggle">
+        <Icon if="$icon" name="$icon" classList="me-1" /><span>{buttonText()}</span><Icon name="bi-chevron-down" classList="tree-picker-caret ms-1" />
+    </button>
+    <Overlay if="$isOpen" base="$trigger" absolute autoWidth align="$align" (clickOutside)="close">
+        <div #panel class="card shadow-sm p-2 tree-picker-panel" role="dialog" aria-label="$label"
+            (keydown.escape)="cancel">
+            <SearchInput label="{'Find: ' . $label}" placeholder="$searchPlaceholder" model="$term" debounce="{0}"
+                inputClass="form-control-sm" />
+            <div class="tree-picker-list mt-2">
+                <TreeView items="$visible" selected="$selected" label="$label" flat="$searching"
+                    disabledKeys="$disabledKeys" collapseOver="$collapseOver" (select)="choose" />
+                <p if="$noMatches" class="small text-muted px-2 py-1 mb-0">Nothing matches that.</p>
+            </div>
+        </div>
+    </Overlay>
+</div>

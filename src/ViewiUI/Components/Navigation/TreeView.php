@@ -6,6 +6,7 @@ use Viewi\Components\BaseComponent;
 use Viewi\Components\DOM\DomEvent;
 use Viewi\Components\DOM\DomHelper;
 use Viewi\Components\DOM\HtmlNode;
+use Viewi\UI\Components\Navigation\TreeViewRow;
 
 /**
  * A selectable, collapsible tree, operable from the keyboard (WAI-ARIA tree):
@@ -45,6 +46,8 @@ class TreeView extends BaseComponent
     public float $indent = 0.85;
     /** Up to this many nodes the tree starts fully expanded; more, and it starts collapsed. 0 = never. */
     public int $collapseOver = 20;
+    /** Keys shown but not choosable (e.g. where things already are); they never emit `select`. */
+    public array $disabledKeys = [];
 
     /**
      * What the template draws: the visible rows. A PROPERTY rebuilt on every change, because a
@@ -104,7 +107,15 @@ class TreeView extends BaseComponent
     public function select(TreeViewRow $row)
     {
         $this->focusIndex = $this->positionOf($row);
+        if ($this->isDisabled($row)) {
+            return;
+        }
         $this->emitEvent('select', $row->node->key);
+    }
+
+    public function isDisabled(TreeViewRow $row): bool
+    {
+        return in_array($row->node->key, $this->disabledKeys, true);
     }
 
     public function isSelected(TreeNode $node): bool

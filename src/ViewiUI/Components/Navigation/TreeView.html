@@ -9,7 +9,8 @@
             <slot name="edit" data="$row->node"></slot>
         </div>
         <button else type="button" role="treeitem" class="btn btn-sm flex-grow-1 text-start tree-view-item"
-            class.active="{isSelected($row->node)}" aria-level="{levelOf($row->node)}"
+            class.active="{isSelected($row->node)}" class.tree-view-disabled="{isDisabled($row)}"
+            aria-disabled="{isDisabled($row) ? 'true' : null}" aria-level="{levelOf($row->node)}"
             aria-expanded="{expandedAttr($row)}" aria-selected="{isSelected($row->node) ? 'true' : 'false'}"
             tabindex="{tabIndexOf($row)}" title="{$row->node->title}" (click)="select($row)"
             (focus)="onFocus($row)">
