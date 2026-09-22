@@ -51,7 +51,9 @@
                 </tr>
             </thead>
             <tbody>
-                <tr foreach="$items as $item" class.table-selected="{$selectable && in_array($item->{$selectKey}, $selectedKeys, true)}">
+                <tr foreach="$items as $item" class.table-selected="{$selectable && in_array($item->{$selectKey}, $selectedKeys, true)}"
+                    draggable="{$draggableRows ? 'true' : null}" (dragstart)="onRowDragStart($item, $event)"
+                    (dragend)="onRowDragEnd">
                     <td if="$selectable" class="table-select" data-label="Select">
                         <input type="checkbox" class="form-check-input"
                             checked="{in_array($item->{$selectKey}, $selectedKeys, true)}" (change)="toggleRow($item)"

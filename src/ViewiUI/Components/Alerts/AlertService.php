@@ -58,6 +58,8 @@ class AlertService
 
     public function remove(MessageModel $message)
     {
-        $this->messages = array_filter($this->messages, fn(MessageModel $m) => $m && $m->id !== $message->id);
+        // array_values: array_filter keeps the keys, and the browser then holds an OBJECT - the next
+        // `[...$this->messages, $new]` threw \"not iterable\" (2026-09-22).
+        $this->messages = array_values(array_filter($this->messages, fn(MessageModel $m) => $m && $m->id !== $message->id));
     }
 }

@@ -58,6 +58,11 @@ class DataTable extends BaseComponent
     public bool $selectable = false;
     /** What the selection bar says while nothing is selected; its space is kept either way. */
     public string $selectionHint = 'Select rows to act on several at once.';
+    /**
+     * Rows can be dragged (onto a folder, say): `rowDragStart` carries the row's item, `rowDragEnd`
+     * fires however the drag ends. What a drop means is the page's business.
+     */
+    public bool $draggableRows = false;
     /** The property that identifies a row for selection. */
     public string $selectKey = 'Id';
     /**
@@ -173,6 +178,26 @@ class DataTable extends BaseComponent
             }
         }
         $this->emitEvent('selectionChange', $keys);
+    }
+
+    public function onRowDragStart($item, DomEvent $event)
+    {
+        if (!$this->draggableRows) {
+            return;
+        }
+        // Firefox starts no drag without data; the row's key is what a drop target would want.
+        if ($event->dataTransfer !== null) {
+            $event->dataTransfer->setData('text/plain', '' . $item->{$this->selectKey});
+            $event->dataTransfer->effectAllowed = 'move';
+        }
+        $this->emitEvent('rowDragStart', $item);
+    }
+
+    public function onRowDragEnd()
+    {
+        if ($this->draggableRows) {
+            $this->emitEvent('rowDragEnd', true);
+        }
     }
 
     public function mounted()

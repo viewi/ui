@@ -23,6 +23,8 @@ class ModalService
 
     public function remove(ModalModel $message)
     {
-        $this->dialogs = array_filter($this->dialogs, fn(ModalModel $m) => $m && $m->id !== $message->id);
+        // array_values: array_filter keeps the keys, and the browser then holds an OBJECT - the next
+        // `[...$this->dialogs, $new]` threw \"not iterable\" (2026-09-22).
+        $this->dialogs = array_values(array_filter($this->dialogs, fn(ModalModel $m) => $m && $m->id !== $message->id));
     }
 }
