@@ -1,6 +1,7 @@
 <div class="tree-view" role="tree" aria-label="$label" #treeRoot (keydown)="onKey($event)">
     <div foreach="$rows as $row" role="none" class="tree-view-row d-flex align-items-center"
-        class.active="{isSelected($row->node)}" style="{indentOf($row->node)}">
+        class.active="{isSelected($row->node)}" class.tree-view-drop="{isDropTarget($row)}" style="{indentOf($row->node)}"
+        (dragover)="onDragOver($row, $event)" (dragleave)="onDragLeave($row)" (drop)="onDrop($row, $event)">
         <!-- The chevron is not a tab stop: the arrows open and close from the row itself. -->
         <span if="$row->hasChildren" class="tree-view-toggle" class.expanded="{isOpen($row)}" aria-hidden="true"
             (click)="toggle($row)"><Icon name="bi-chevron-right" /></span>
@@ -13,7 +14,8 @@
             aria-disabled="{isDisabled($row) ? 'true' : null}" aria-level="{levelOf($row->node)}"
             aria-expanded="{expandedAttr($row)}" aria-selected="{isSelected($row->node) ? 'true' : 'false'}"
             tabindex="{tabIndexOf($row)}" title="{$row->node->title}" (click)="select($row)"
-            (focus)="onFocus($row)">
+            (focus)="onFocus($row)" draggable="{isDraggable($row) ? 'true' : null}"
+            (dragstart)="onDragStart($row, $event)" (dragend)="onDragEnd">
             <span class="d-flex justify-content-between align-items-center">
                 <span class="text-truncate"><Icon if="$row->node->icon" name="$row->node->icon" classList="me-2" />{$row->node->label}</span>
                 <span if="{$row->node->badge !== ''}" class="badge text-bg-light ms-2">{$row->node->badge}</span>

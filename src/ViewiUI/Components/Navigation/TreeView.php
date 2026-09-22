@@ -48,6 +48,18 @@ class TreeView extends BaseComponent
     public int $collapseOver = 20;
     /** Keys shown but not choosable (e.g. where things already are); they never emit `select`. */
     public array $disabledKeys = [];
+    /**
+     * Drag and drop. Rows whose key is in `draggableKeys` can be picked up (`dragStart` with the
+     * key, `dragEnd` however it ends). While `dropEnabled`, every row but `dropDisabledKeys` accepts
+     * a drop: it highlights under the pointer and emits `drop` with its key. A disabled row never
+     * accepts, so the browser shows "no drop" there and nothing is emitted. What is being dragged
+     * - a row of this tree or something from elsewhere on the page - is the page's business.
+     */
+    public array $draggableKeys = [];
+    public bool $dropEnabled = false;
+    public array $dropDisabledKeys = [];
+    /** The row under the pointer during a drag, null = none. */
+    public $dropKey = null;
 
     /**
      * What the template draws: the visible rows. A PROPERTY rebuilt on every change, because a
@@ -163,6 +175,71 @@ class TreeView extends BaseComponent
             return null;
         }
         return $this->isOpen($row) ? 'true' : 'false';
+    }
+
+    public function isDraggable(TreeViewRow $row): bool
+    {
+        return in_array($row->node->key, $this->draggableKeys, true);
+    }
+
+    public function canDrop(TreeViewRow $row): bool
+    {
+        return $this->dropEnabled && !in_array($row->node->key, $this->dropDisabledKeys, true);
+    }
+
+    public function isDropTarget(TreeViewRow $row): bool
+    {
+        return $this->dropKey !== null && $row->node->key === $this->dropKey;
+    }
+
+    public function onDragStart(TreeViewRow $row, DomEvent $event)
+    {
+        if (!$this->isDraggable($row)) {
+            return;
+        }
+        // Firefox starts no drag without data.
+        if ($event->dataTransfer !== null) {
+            $event->dataTransfer->setData('text/plain', '' . $row->node->key);
+            $event->dataTransfer->effectAllowed = 'move';
+        }
+        $this->emitEvent('dragStart', $row->node->key);
+    }
+
+    public function onDragEnd()
+    {
+        $this->dropKey = null;
+        $this->emitEvent('dragEnd', true);
+    }
+
+    /** Accepting a drop means cancelling dragover; a row that will not take it simply does not. */
+    public function onDragOver(TreeViewRow $row, DomEvent $event)
+    {
+        if (!$this->canDrop($row)) {
+            return;
+        }
+        $event->preventDefault();
+        if ($event->dataTransfer !== null) {
+            $event->dataTransfer->dropEffect = 'move';
+        }
+        if ($this->dropKey !== $row->node->key) {
+            $this->dropKey = $row->node->key;
+        }
+    }
+
+    public function onDragLeave(TreeViewRow $row)
+    {
+        if ($this->dropKey === $row->node->key) {
+            $this->dropKey = null;
+        }
+    }
+
+    public function onDrop(TreeViewRow $row, DomEvent $event)
+    {
+        $event->preventDefault();
+        $this->dropKey = null;
+        if ($this->canDrop($row)) {
+            $this->emitEvent('drop', $row->node->key);
+        }
     }
 
     /** The chevron: open or close a node without selecting it. */
