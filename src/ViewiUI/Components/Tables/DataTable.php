@@ -63,6 +63,11 @@ class DataTable extends BaseComponent
      * fires however the drag ends. What a drop means is the page's business.
      */
     public bool $draggableRows = false;
+    /**
+     * Rows per page to offer beside the pager; [] hides the choice. Emits `pageSize` with the
+     * number, so the list can re-fetch (and remember it in the address).
+     */
+    public array $pageSizes = [10, 25, 50, 100];
     /** The property that identifies a row for selection. */
     public string $selectKey = 'Id';
     /**
@@ -196,6 +201,15 @@ class DataTable extends BaseComponent
         $this->emitEvent('rowDragStart', $item);
     }
 
+    public function onPageSize(DomEvent $event)
+    {
+        $size = (int) $event->target->value;
+        if ($size > 0) {
+            $this->emitEvent('pageSize', $size);
+            $this->tableContext?->emitEvent('pageSize', $size);
+        }
+    }
+
     public function onRowDragEnd()
     {
         if ($this->draggableRows) {
@@ -206,8 +220,12 @@ class DataTable extends BaseComponent
     public function mounted()
     {
         if ($this->filter === null) {
-            $this->filter = new TableFilter(+ ($this->pageSize ?? 10));
-            $this->filter->paging->setTotal(+ ($this->total ?? count($this->items)));
+            // Locals first: the transpiler drops the ?? inside a unary plus (`+ ($x ?? 10)` becomes
+            // `+$x`), which built a filter with page size 0 when no pageSize was passed.
+            $size = $this->pageSize ?? 10;
+            $total = $this->total ?? count($this->items);
+            $this->filter = new TableFilter((int) $size);
+            $this->filter->paging->setTotal((int) $total);
         }
     }
 
