@@ -24,7 +24,11 @@
          its space while nothing is selected, showing the hint instead, so ticking the first row
          never pushes the table down. A labelled region, so a screen reader says what it is for. -->
     <div if="$selectable" class="data-table-selection d-flex flex-wrap align-items-center gap-2"
-        class.data-table-selection-idle="{$selectedCount === 0}" role="region" aria-label="Selected rows">
+        class.data-table-selection-idle="{$selectedCount === 0}" class.data-table-selection-stacked="$stacked"
+        role="region" aria-label="Selected rows">
+        <!-- Select-all for stacked cards, which hide the table header (shown below 920px only). -->
+        <input type="checkbox" class="form-check-input m-0 data-table-select-all" checked="{$allSelected}"
+            (change)="toggleAll" aria-label="Select every row on this page" />
         <!-- A real element, not <template>: a <template> around the slot rendered the Clear button
              empty, with its label outside it as loose text. -->
         <div if="{$selectedCount > 0}" class="d-flex flex-wrap align-items-center gap-2">
@@ -37,7 +41,7 @@
 
     <!-- Scrolls sideways instead of pushing the page wider than the phone. -->
     <div if="{count($items) > 0}" class="table-responsive">
-        <table class="table align-middle mt-4" class.table-stacked="$stacked">
+        <table class="table align-middle mt-4" class.table-stacked="$stacked" class.table-selectable="$selectable">
             <thead>
                 <tr>
                     <th if="$selectable" scope="col" class="table-select">
@@ -54,7 +58,7 @@
                 <tr foreach="$items as $item" class.table-selected="{$selectable && in_array($item->{$selectKey}, $selectedKeys, true)}"
                     draggable="{$draggableRows ? 'true' : null}" (dragstart)="onRowDragStart($item, $event)"
                     (dragend)="onRowDragEnd">
-                    <td if="$selectable" class="table-select" data-label="Select">
+                    <td if="$selectable" class="table-select">
                         <input type="checkbox" class="form-check-input"
                             checked="{in_array($item->{$selectKey}, $selectedKeys, true)}" (change)="toggleRow($item)"
                             aria-label="Select this row" />

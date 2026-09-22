@@ -164,10 +164,13 @@ class DataTable extends BaseComponent
         // at all.
         // $tableRoot is null on the server, so this only ever runs in the browser.
         if ($this->tableRoot !== null) {
-            $head = $this->tableRoot->querySelector('thead th.table-select input');
-            if ($head !== null) {
-                $head->checked = $this->allSelected;
-                $head->indeterminate = $this->someSelected;
+            // The header's select-all, and its twin in the selection bar for stacked cards (which
+            // hide the header).
+            $heads = DomHelper::getDomList($this->tableRoot->querySelectorAll('thead th.table-select input, .data-table-select-all'));
+            $headCount = count($heads);
+            for ($h = 0; $h < $headCount; $h++) {
+                $heads[$h]->checked = $this->allSelected;
+                $heads[$h]->indeterminate = $this->someSelected;
             }
             $boxes = DomHelper::getDomList($this->tableRoot->querySelectorAll('tbody td.table-select input'));
             $size = count($boxes);

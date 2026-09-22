@@ -182,10 +182,54 @@
     border: 1px dashed var(--bs-border-color);
 }
 
-/* On a phone the stacked card puts the checkbox first, beside the row's main cell. */
-@media (max-width: 575.98px) {
-    .table-stacked td.table-select {
-        order: -2;
+/* The selection bar's select-all is for stacked cards only; the grid has one in its header. */
+.data-table-selection .data-table-select-all {
+    display: none;
+}
+
+/* Stacked cards (below 920px, same breakpoint as .table-stacked): the checkbox sits at the card's
+   top-left, beside the row's main cell, and the card makes room for it. Without this the cell kept
+   the grid's width: 1% and shrank to nothing, so on a tablet a row could not be ticked at all. */
+@media (max-width: 919.98px) {
+    .table-stacked.table-selectable tbody tr {
+        position: relative;
+    }
+
+    .table-stacked tbody td.table-select {
+        position: absolute;
+        left: 0.4rem;
+        /* On the first line of the card, level with the link (its icons are ~1.5rem tall). */
+        top: calc(0.75rem + 0.2rem);
+        width: auto;
+    }
+
+    /* A selected card is tinted as ONE card. Bootstrap paints each cell with an inset shadow
+       (--bs-table-bg-state), which in the stacked layout showed as a patchwork of blocks. */
+    .table-stacked.table-selectable tbody tr {
+        padding-left: 2.2rem;
+        padding-right: 0.4rem;
+        border-radius: var(--bs-border-radius);
+    }
+
+    .table-stacked tbody tr.table-selected {
+        background-color: rgba(var(--bs-primary-rgb), .08);
+    }
+
+    .table-stacked tbody tr.table-selected > * {
+        --bs-table-bg-state: transparent;
+        background-color: transparent;
+    }
+
+    .data-table-selection-stacked .data-table-select-all {
+        display: inline-block;
+        width: 1.15rem;
+        height: 1.15rem;
+        flex-shrink: 0;
+    }
+
+    .table-stacked tbody td.table-select .form-check-input {
+        width: 1.15rem;
+        height: 1.15rem;
     }
 }
 
@@ -272,7 +316,9 @@
 }
 
 .tree-view-row.active {
-    background-color: var(--bs-primary-bg-subtle);
+    /* Tinted from the theme's primary (not --bs-primary-bg-subtle, which apps rarely re-theme and
+       which reads navy in dark mode next to a purple brand). */
+    background-color: rgba(var(--bs-primary-rgb), .14);
 }
 
 .tree-view-item {
@@ -283,7 +329,7 @@
 
 .tree-view-item.active {
     font-weight: 600;
-    color: var(--bs-primary-text-emphasis);
+    color: var(--bs-emphasis-color);
 }
 
 .tree-view-item:focus-visible {
@@ -408,6 +454,6 @@
 
 /* TreeView drop target under the pointer during a drag. */
 .tree-view-row.tree-view-drop {
-    background-color: var(--bs-primary-bg-subtle);
-    box-shadow: inset 0 0 0 2px var(--bs-primary);
+    background-color: rgba(var(--bs-primary-rgb), .1);
+    box-shadow: inset 0 0 0 2px rgba(var(--bs-primary-rgb), .75);
 }
