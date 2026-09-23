@@ -486,3 +486,14 @@
         box-shadow: inset 0 -1px 0 var(--bs-border-color);
     }
 }
+
+/* Menu items on touch screens and phones: finger-sized rows (44px, Apple's minimum touch
+   target). `pointer: coarse` catches touch whatever the width; the width catches a narrowed
+   desktop window, so what is tested there is what a phone gets. */
+@media (max-width: 575.98px), (pointer: coarse) {
+    .dropdown-menu .dropdown-item {
+        min-height: 2.75rem;
+        padding-top: .5rem;
+        padding-bottom: .5rem;
+    }
+}

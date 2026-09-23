@@ -7,9 +7,10 @@ use Viewi\Components\DOM\DomEvent;
 use Viewi\Components\DOM\DomHelper;
 use Viewi\Components\DOM\HtmlNode;
 use Viewi\Components\Environment\ClientTimer;
+use Viewi\UI\Components\Dropdown\DropdownMenuStack;
 
 /**
- * An actions menu behind one small trigger — the ⋯ on a row:
+ * An actions menu behind one small trigger - the ⋯ on a row:
  *
  *     <DropdownMenu items="$folderActions" label="Folder actions" (select)="onFolderAction" />
  *
@@ -26,25 +27,31 @@ use Viewi\Components\Environment\ClientTimer;
  *
  * The trigger stops the click from bubbling, so a menu inside a clickable row does not also select
  * the row. It must sit BESIDE a row's own button, never inside it: a button inside a button is not
- * valid HTML, and browsers resolve it unpredictably.
+ * valid HTML, and browsers resolve it unpredictably. Because that click never reaches the document,
+ * a menu that is already open cannot see it as a click outside - DropdownMenuStack closes it
+ * instead, so only one menu is ever open.
  */
 class DropdownMenu extends BaseComponent
 {
     /** @var DropdownMenuItem[] */
     public array $items = [];
-    /** Accessible name for the trigger and the menu — say what the actions are for. */
+    /** Accessible name for the trigger and the menu - say what the actions are for. */
     public string $label = 'Actions';
     public string $icon = 'bi-three-dots';
     /** Visible text beside the icon ("Move to…"); empty = icon only, like a row's ⋯. */
     public string $text = '';
     public string $buttonClass = 'btn btn-sm btn-link dropdown-menu-trigger';
-    /** 'end' opens leftward from the trigger's right edge — the usual place for a row's ⋯. */
+    /** 'end' opens leftward from the trigger's right edge - the usual place for a row's ⋯. */
     public string $align = 'end';
     public bool $isOpen = false;
     public ?HtmlNode $trigger = null;
     public ?HtmlNode $menu = null;
     /** Index of the focused item while the menu is open; -1 = none. */
     public int $activeIndex = -1;
+
+    public function __construct(private DropdownMenuStack $stack)
+    {
+    }
 
     public function toggle()
     {
@@ -59,6 +66,7 @@ class DropdownMenu extends BaseComponent
     public function open(int $index)
     {
         $this->isOpen = true;
+        $this->stack->opened($this);
         $this->activeIndex = $index === -1 ? $this->lastEnabled() : $this->nextEnabled(-1, 1);
         ClientTimer::setTimeoutStatic(fn() => $this->focusActive(), 0);
     }
@@ -70,6 +78,7 @@ class DropdownMenu extends BaseComponent
             return;
         }
         $this->isOpen = false;
+        $this->stack->closed($this);
         $this->activeIndex = -1;
         if ($returnFocus && $this->trigger !== null) {
             $this->trigger->focus();
@@ -133,7 +142,7 @@ class DropdownMenu extends BaseComponent
     /**
      * Move DOM focus to the active item. The Overlay renders hidden until rendered() has measured
      * its position (one timer tick, then one more for the re-render), and a hidden element cannot
-     * take focus — so try, and if focus did not land, try again on the next frames, up to 10 times.
+     * take focus - so try, and if focus did not land, try again on the next frames, up to 10 times.
      */
     public function focusActive(int $tries = 10)
     {
@@ -155,7 +164,7 @@ class DropdownMenu extends BaseComponent
     private function nextEnabled(int $from, int $step): int
     {
         // Not `$count`: a local named like a function it calls shadows that function once
-        // transpiled — `var count = count(...)` — and the call fails in the browser.
+        // transpiled - `var count = count(...)` - and the call fails in the browser.
         $total = count($this->items);
         if ($total === 0) {
             return -1;
