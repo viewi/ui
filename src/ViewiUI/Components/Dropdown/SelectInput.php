@@ -204,11 +204,25 @@ class SelectInput extends BaseComponent
         ClientTimer::setTimeoutStatic(fn() => $this->scrollCursorIntoView(), 0);
     }
 
+    /**
+     * Scrolls the LIST, never the page. scrollIntoView() also scrolls every ancestor, and on open it
+     * runs before the Overlay has measured its position - the list still sits at the top of the
+     * document - so on a page taller than the screen it jumped the page to the top. The list is
+     * position: relative, so an option's offsetTop is already measured from the list's own top.
+     */
     public function scrollCursorIntoView()
     {
         $option = DomHelper::getElementById($this->activeDescendant);
-        if ($option !== null) {
-            $option->scrollIntoView(['block' => 'nearest']);
+        $list = $option !== null ? $option->closest('.select-input-list') : null;
+        if ($list === null) {
+            return;
+        }
+        $top = $option->offsetTop;
+        $bottom = $top + $option->offsetHeight;
+        if ($top < $list->scrollTop) {
+            $list->scrollTop = $top;
+        } else if ($bottom > $list->scrollTop + $list->clientHeight) {
+            $list->scrollTop = $bottom - $list->clientHeight;
         }
     }
 
