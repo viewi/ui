@@ -8,17 +8,20 @@ use Viewi\Components\DOM\HtmlNode;
 /**
  * Calendar date-range picker. A trigger button opens an Overlay holding a month grid;
  * click a start day then an end day to pick an inclusive range. Emits `apply` with
- * [from, to] as 'YYYY-MM-DD' (UTC) strings. Bind `from`/`to` to reflect external changes
+ * [from, to] as 'YYYY-MM-DD' strings. Bind `from`/`to` to reflect external changes
  * (e.g. preset buttons clearing the custom range).
  *
- * All date math is UTC (gmmktime/gmdate) to match the server, which interprets the
- * query dates as UTC - keeps the grid and the fetched window from drifting by a day.
+ * The days are plain calendar days: the math runs on them as UTC (gmmktime/gmdate) only so
+ * the grid cannot drift, and whoever reads the dates decides which zone they are days of.
+ * The one thing that depends on a zone is which day is today: pass `today` when the reader's
+ * zone is not UTC, or days that have begun for them stay disabled as "future".
  */
 class DateRangePicker extends BaseComponent
 {
     public ?string $from = null;   // bound current range start ('YYYY-MM-DD' or null/'')
     public ?string $to = null;     // bound current range end
     public ?string $placeholder = 'Custom range'; // trigger label when no range is set
+    public ?string $today = null;  // the reader's current day ('YYYY-MM-DD'); null = today in UTC
 
     public bool $isExpanded = false;
     public ?HtmlNode $trigger = null; // ref the Overlay positions against
@@ -59,8 +62,11 @@ class DateRangePicker extends BaseComponent
         return strtotime($ymd . ' UTC');
     }
 
-    private function today(): string
+    private function currentDay(): string
     {
+        if ($this->today !== null && $this->today !== '') {
+            return $this->today;
+        }
         return gmdate('Y-m-d', time());
     }
 
@@ -69,7 +75,7 @@ class DateRangePicker extends BaseComponent
     {
         $this->selStart = $this->from ?? '';
         $this->selEnd = $this->to ?? '';
-        $anchor = $this->selEnd !== '' ? $this->selEnd : ($this->selStart !== '' ? $this->selStart : $this->today());
+        $anchor = $this->selEnd !== '' ? $this->selEnd : ($this->selStart !== '' ? $this->selStart : $this->currentDay());
         $anchorTs = $this->ts($anchor);
         $this->viewYear = intval(gmdate('Y', $anchorTs));
         $this->viewMonth = intval(gmdate('n', $anchorTs));
@@ -90,7 +96,7 @@ class DateRangePicker extends BaseComponent
         $this->monthLabel = gmdate('F Y', $firstTs);
         $dow = intval(gmdate('N', $firstTs)); // 1 = Monday .. 7 = Sunday
         $startTs = $firstTs - ($dow - 1) * 86400; // back up to the Monday on/before the 1st
-        $todayStr = $this->today();
+        $todayStr = $this->currentDay();
         $cells = [];
         $i = 0;
         while ($i < 42) {
