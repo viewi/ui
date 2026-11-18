@@ -62,6 +62,11 @@ class DataTable extends BaseComponent
     /** What the selection bar says while nothing is selected; its space is kept either way. */
     public string $selectionHint = 'Select rows to act on several at once.';
     /**
+     * What the selection bar says in place of "N selected"; '' = the count. For a page whose
+     * selection reaches beyond the ticked rows ("All 1,240 matching selected").
+     */
+    public string $selectedText = '';
+    /**
      * Rows can be dragged (onto a folder, say): `rowDragStart` carries the row's item, `rowDragEnd`
      * fires however the drag ends. What a drop means is the page's business.
      */
@@ -87,6 +92,12 @@ class DataTable extends BaseComponent
     public bool $allSelected = false;
     public bool $someSelected = false;
     public int $selectedCount = 0;
+
+    /** The selection bar's count: selectedText when the page set one, else "N selected". */
+    public function selectedLabel(): string
+    {
+        return $this->selectedText !== '' ? $this->selectedText : $this->selectedCount . ' selected';
+    }
 
     /**
      * "No rows" has two very different causes and must not share one message: the

@@ -36,7 +36,7 @@
             <!-- A real element, not <template>: a <template> around the slot rendered the Clear button
                  empty, with its label outside it as loose text. -->
             <div if="{$selectedCount > 0}" class="d-flex flex-wrap align-items-center gap-2">
-                <span class="fw-semibold">{$selectedCount} selected</span>
+                <span class="fw-semibold data-table-selected-label">{selectedLabel()}</span>
                 <slot name="selection"></slot>
                 <button type="button" class="btn btn-sm btn-link" (click)="clearSelection">Clear selection</button>
             </div>
